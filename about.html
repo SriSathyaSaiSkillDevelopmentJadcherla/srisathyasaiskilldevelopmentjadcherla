@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Sri Sathya Sai Skill Development Centre</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="chatbot.js"></script>
+    <!-- GSAP and ScrollTrigger -->
+    <script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F97316;
+            --primary-dark: #EA580C;
+            --secondary: #1E293B;
+            --light: #FFF7ED;
+            --accent: #F59E0B;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--secondary);
+            line-height: 1.6;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -38px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 4px solid var(--light);
+        }
+
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 33px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--primary);
+        }
+
+        .value-card {
+            transition: all 0.3s ease;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-card {
+            transition: all 0.3s ease;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-image {
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .team-card:hover .team-image {
+            transform: scale(1.05);
+        }
+
+        .quote-card {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quote-card:before {
+            content: '"';
+            position: absolute;
+            top: -30px;
+            left: 10px;
+            font-size: 120px;
+            color: rgba(255, 255, 255, 0.1);
+            font-family: serif;
+            line-height: 1;
+        }
+
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive Styles for Mission Section */
+        #our-mission {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+        }
+
+       @media (max-width: 768px) {
+    #our-mission .value-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #our-mission .impact-wrapper {
+        flex-direction: column;
+    }
+
+    #our-mission .impact-column {
+        width: 100%;
+    }
+}
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="flex items-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                       <div class="hero-banner-image">
+                            <img src="Images\Logo\logo.jpg" alt="Institute Logo">
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">Sri Sathya Sai</h1>
+                        <p class="text-xs text-orange-500 font-medium">Skill Development Centre, Telangana</p>
+                    </div>
+                </a>
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="nav-link text-gray-600">Home</a>
+                    <a href="about.html" class="nav-link text-orange-500 active">About Us</a>
+                    <a href="programs.html" class="nav-link text-gray-600">Programs</a>
+                    <a href="gallery.html" class="nav-link text-gray-600">Gallery</a>
+                    <a href="join.html" class="nav-link text-gray-600">Join Us</a>
+                    <a href="contact.html" class="nav-link text-gray-600">Contact</a>
+                    <a href="register.html" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Register</a>
+                </nav>
+                <button id="mobileMenuBtn" class="md:hidden text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobileMenu" class="md:hidden hidden py-4">
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Home</a></li>
+                    <li><a href="about.html" class="block px-4 py-2 text-orange-500 font-medium hover:bg-orange-50 rounded">About Us</a></li>
+                    <li><a href="programs.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Programs</a></li>
+                    <li><a href="gallery.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Gallery</a></li>
+                    <li><a href="join.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Join Us</a></li>
+                    <li><a href="contact.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Contact</a></li>
+                    <li><a href="register.html" class="block mt-4 px-4 py-2 bg-orange-500 text-white text-center rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+       <section class="hero-section relative h-64 flex items-center justify-center text-white">
+    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="container mx-auto px-4 relative z-10 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">About Our Divine Mission</h1>
+        <p class="text-lg max-w-xl mx-auto mb-6">"Love All, Serve All" - </p>
+                         <p class="mt-2 font-semibold">-Guided by the teachings of Bhagawan Sri Sathya Sai Baba</p>
+                         <br>
+
+        <a href="#our-mission" class="inline-block px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition font-medium">Explore Our Journey</a>
+    </div>
+</section>
+
+
+        <!-- Mission Section -->
+        <section id="our-mission" class="py-16 bg-white">
+                <div class="max-w-4xl mx-auto text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Our Divine Purpose</h2>
+                    <div class="w-20 h-1 bg-orange-500 mx-auto mb-6"></div>
+                    <p class="text-gray-600">Inspired by Sri Sathya Sai Baba’s message of selfless service, our Skill Development Centre strives to transform lives through vocational training and value-based education.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <div class="value-card p-8 text-center">
+                        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-heart text-orange-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Love as the Foundation</h3>
+                        <p class="text-gray-600">We approach every student with unconditional love, seeing the divine in each individual.</p>
+                    </div>
+
+                    <div class="value-card p-8 text-center">
+                        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-hands-helping text-orange-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Service to Society</h3>
+                        <p class="text-gray-600">Our work is seva (selfless service) to uplift the underprivileged through skill development.</p>
+                    </div>
+
+                    <div class="value-card p-8 text-center">
+                        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-seedling text-orange-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Holistic Transformation</h3>
+                        <p class="text-gray-600">We transform lives by developing both vocational skills and strong moral character.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-8 md:p-12">
+                    <div class="md:flex items-center">
+                        <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">What We Believe</h3>
+                            <p class="text-gray-600 mb-6">"Education should be for life, not just for living." - Sri Sathya Sai Baba</p>
+                            <p class="text-gray-600">Our centre combines practical skill training with spiritual values to create not just skilled workers, but good human beings who contribute positively to society. We believe in empowering individuals to become self-reliant while maintaining high ethical standards.</p>
+                        </div>
+                        <div class="md:w-1/2">
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h4 class="font-semibold text-gray-800 mb-4">Our Impact (2025)</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-sm font-medium text-gray-700">Students Trained</span>
+                                            <span class="text-sm font-medium text-orange-500">20+</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-orange-500 h-2 rounded-full" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-sm font-medium text-gray-700">Placement Rate</span>
+                                            <span class="text-sm font-medium text-orange-500">87%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-orange-500 h-2 rounded-full" style="width: 87%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-sm font-medium text-gray-700">Women Empowered</span>
+                                            <span class="text-sm font-medium text-orange-500">68%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-orange-500 h-2 rounded-full" style="width: 68%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Founder Section -->
+        <section class="py-16 bg-gray-50 founder-section">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Guest of Honour</h2>
+                    <div class="w-20 h-1 bg-orange-500 mx-auto mb-6"></div>
+                    
+                </div>
+
+
+             <!-- Nimish Pandya -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm mb-6">
+                    <div class="md:flex md:items-stretch">
+                        <!-- Image Section -->
+                        <div class="md:w-1/3">
+                            <img src="Images/About US/Nimish Pandya.jpg" alt="Founder" class="w-full h-full object-cover">
+                        </div>
+
+                        <!-- Text Section -->
+                        <div class="md:w-2/3 p-6 md:p-12 flex flex-col justify-center">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">Shri Nimish Pandya</h3>
+                            <p class="text-orange-500 font-medium mb-6">All India President | Sri Satya Sai Seva Organizations</p>
+                            <div class="prose max-w-none text-gray-600 mb-8">
+                                <p>Inspired by a divine encounter with Bhagawan Sri Sathya Sai Baba in 1998,   Nimish Pandya dedicated his life to serving society through education and skill development. With over 25 years of experience in vocational training, he established this centre to fulfill Baba's message of "Education for Life, Not Just for Living."</p>
+                                <p class="mt-4">Under Dr. Kumar's guidance, the centre has become a beacon of hope for hundreds of underprivileged youth, providing not just skills but also instilling human values and self-confidence.</p>
+                               <div class="quote-card p-6 rounded-lg text-white mt-6 bg-gradient-to-r from-orange-500 to-amber-500 text-center">
+                                <p class="font-medium italic leading-relaxed">
+                                    "Live every breath of your life for the only meaningful purpose: Swami."
+                                </p>
+                                <p class="mt-2 font-semibold">- Sri Sathya Sai Baba</p>
+                            </div>
+
+                            </div>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="bg-orange-50 px-4 py-2 rounded-full">
+                                    <span class="text-orange-600 font-medium">Service Above Self</span>
+                                </div>
+                                <div class="bg-orange-50 px-4 py-2 rounded-full">
+                                    <span class="text-orange-600 font-medium">Empowerment Through Education</span>
+                                </div>
+                                <div class="bg-orange-50 px-4 py-2 rounded-full">
+                                    <span class="text-orange-600 font-medium">Values-Based Learning</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Venkat Rao  -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+                    <div class="md:flex">
+
+                        <div class="md:w-1/3">
+                            <img src="Images\About US\Venkat Rao.jpg" alt="Founder" class="w-full h-full object-cover rounded-md">
+                        </div>
+
+                        <div class="md:w-2/3 p-8 md:p-12">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">Shri Venkat Rao </h3>
+                            <p class="text-orange-500 font-medium mb-6">State President | Sri Satya Sai Seva Organizations</p>
+                            <div class="prose max-w-none text-gray-600 mb-8">
+                                <p>The Sri Sathya Sai Skill Development initiative is a vocational training program inspired by the teachings of Sathya Sai Baba, aimed at empowering youth with employable skills. While the organization operates under the broader Sri Sathya Sai Seva Organisations, it does not have a formal "State President" title in its hierarchy. However, if you are referring to Venkat Rao as a key office-bearer or coordinator associated with this skill development program at the state level, there is limited publicly available information about his specific role.."</p>
+                                <div class="quote-card p-6 rounded-lg text-white mt-6 bg-gradient-to-r from-orange-500 to-amber-500 text-center">
+                                <p class="font-medium italic leading-relaxed">
+                                        “One religion, love. One caste, humanity. One God, many names.” </p>
+                                <p class="mt-2 font-semibold">- Sri Sathya Sai Baba</p>
+                            </div>
+
+                            </div>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="bg-orange-50 px-4 py-2 rounded-full">
+                                    <span class="text-orange-600 font-medium">Service Above Self</span>
+                                </div>
+                                <div class="bg-orange-50 px-4 py-2 rounded-full">
+                                    <span class="text-orange-600 font-medium">Empowerment Through Education</span>
+                                </div>
+                                <div class="bg-orange-50 px-4 py-2 rounded-full">
+                                    <span class="text-orange-600 font-medium">Values-Based Learning</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Narsimulu  -->
+                <div class="max-w-4xl mx-auto text-center my-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Our Founder's Vision</h2>
+                    <div class="w-20 h-1 bg-orange-500 mx-auto mb-6"></div>
+                    <p class="text-gray-600">“Serving humanity is serving God.” - The guiding principle of our founder's life mission</p>
+                </div>
+                
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm ">
+                    <div class="md:flex">
+
+                        <div class="md:w-1/3">
+                            <img src="Images\About US\Narsimulu.jpg" alt="Founder" class="w-full h-full object-cover rounded-md">
+                        </div>
+
+                        <div class="md:w-2/3 p-8 md:p-12">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">Shri G Narsimulu </h3>
+                            <p class="text-orange-500 font-medium mb-6">Devoted Servant of Sai | Social Worker | Business Man</p>
+                            <div class="prose max-w-none text-gray-600 mb-8">
+                                <p>Inspired by a divine encounter with Bhagawan Sri Sathya Sai Baba in 2003, G. Narsimulu dedicated his life to serving society through education and skill development. With over 20 years of experience in vocational training, he established this centre to fulfill Baba's message of "Education for Life, Not Just for Living."</p>
+                                <p class="mt-4">Under G. Narsimulu guidance, the centre has become a beacon of hope for hundreds of underprivileged youth, providing not just skills but also instilling human values and self-confidence.</p>
+                                <div class="quote-card p-6 rounded-lg text-white mt-6 bg-gradient-to-r from-orange-500 to-amber-500 text-center">
+                                <p class="font-medium italic leading-relaxed">
+                                    "Start the day with Love, fill the day with Love, end the day with Love — that is the way to God."
+                                </p>
+                                <p class="mt-2 font-semibold">- Sri Sathya Sai Baba</p>
+                            </div>
+
+                            </div>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="bg-orange-50 px-4 py-2 rounded-full">
+                                    <span class="text-orange-600 font-medium">Service Above Self</span>
+                                </div>
+                                <div class="bg-orange-50 px-4 py-2 rounded-full">
+                                    <span class="text-orange-600 font-medium">Empowerment Through Education</span>
+                                </div>
+                                <div class="bg-orange-50 px-4 py-2 rounded-full">
+                                    <span class="text-orange-600 font-medium">Values-Based Learning</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </section>
+        <!-- Timeline Section -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Our Journey</h2>
+                    <div class="w-20 h-1 bg-orange-500 mx-auto mb-6"></div>
+                    <p class="text-gray-600">From humble beginnings to becoming a centre of excellence in skill development</p>
+                </div>
+
+                <div class="relative max-w-3xl mx-auto pl-16">
+                    <div class="timeline absolute left-0 top-0 h-full"></div>
+                    <div class="timeline-item relative pb-6">
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Divine Inspiration</h3>
+                            <p class="text-gray-600">G Narsimulu receives blessings from Sri Sathya Sai Baba to start a skill development initiative</p>
+                            <span class="inline-block mt-2 text-sm text-orange-500 font-medium">2020</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item relative pb-6">
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Centre Established</h3>
+                            <p class="text-gray-600">The first training centre opens its doors in Anantapur with two programs and 25 students</p>
+                            <span class="inline-block mt-2 text-sm text-orange-500 font-medium">2021</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item relative pb-6">
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">First Graduation</h3>
+                            <p class="text-gray-600">Initial batch of students complete training with 100% placement success</p>
+                            <span class="inline-block mt-2 text-sm text-orange-500 font-medium">2022</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item relative pb-6">
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">New Campus</h3>
+                            <p class="text-gray-600">Expansion to current facility with dedicated labs and training spaces</p>
+                            <span class="inline-block mt-2 text-sm text-orange-500 font-medium">2023</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item relative">
+                        <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Skill Development Centre</h3>
+                            <p class="text-gray-600">The Skill Development Centre empowers youth by equipping them with essential skills, providing them with opportunities to secure placements in reputed companies.</p>
+                            <span class="inline-block mt-2 text-sm text-orange-500 font-medium">2025</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       <!-- Team Section -->
+<section class="pt-12 pb-4 bg-gray-50"> <!-- reduced top and bottom padding -->
+  <div class="container mx-auto px-4">
+
+    <div class="max-w-4xl mx-auto text-center mb-6">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">Our Dedicated Team</h2>
+      <div class="w-20 h-1 bg-orange-500 mx-auto mb-4"></div>
+      <p class="text-gray-600">Committed volunteers and professionals who make our mission possible</p>
+    </div>
+        
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="team-container"></div>
+
+    <!-- Centered Button -->
+    <div class="flex justify-center my-6"> <!-- equal space top & bottom -->
+      <a href="join.html" 
+         class="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition font-medium">
+         Join Our Team
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section class="bg-gradient-to-r from-orange-500 to-amber-500 text-white text-center py-10 px-4">
+  <div class="container mx-auto max-w-3xl">
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">
+      Ready to Transform Lives With Us?
+    </h2>
+    <p class="text-base sm:text-lg md:text-xl mb-6">
+      Whether you want to enroll, volunteer, or support our mission,<br class="hidden md:inline" />
+      we welcome you with open arms.
+    </p>
+
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+      <a href="register.html"
+         class="px-6 py-3 bg-white text-orange-600 rounded-md font-medium hover:bg-orange-100 transition text-sm sm:text-base">
+        Register Now
+      </a>
+      <a href="contact.html"
+         class="px-6 py-3 border-2 border-white text-white rounded-md font-medium hover:bg-white hover:text-orange-600 transition text-sm sm:text-base">
+        Contact Us
+      </a>
+    </div>
+  </div>
+</section>
+
+    </main>
+<div id="chat-container" class="fixed bottom-5 right-5 z-50">
+    <!-- The circular icon that toggles the chat window -->
+    <button id="chat-icon" class="bg-orange-500 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center focus:outline-none hover:bg-orange-600 transition-transform duration-300 ease-in-out">
+        <i class="fas fa-comments text-2xl"></i>
+    </button>
+
+    <!-- 
+      The chat window itself.
+      It's hidden by default and its visibility is toggled by JavaScript.
+      - Width increased to w-[26rem] (416px)
+      - Height decreased to h-[36rem] (576px)
+      - Increased rounding to rounded-2xl
+    -->
+    <div id="chat-window" class="hidden absolute bottom-24 right-0 w-[26rem] bg-white rounded-2xl shadow-2xl flex flex-col transition-all duration-300 ease-in-out" style="height: 36rem;">
+        
+        <!-- Header Section -->
+        <div class="bg-orange-500 text-white p-4 rounded-t-2xl flex justify-between items-center">
+            <h3 class="font-bold text-lg">Chat Bot</h3>
+            <button id="close-chat" class="text-2xl font-bold focus:outline-none hover:opacity-75">&times;</button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto">
+            <!-- Example initial message -->
+            <div class="mb-4 flex">
+                <div class="bg-gray-100 text-gray-800 rounded-lg py-2 px-4 inline-block max-w-xs">
+                    <p>Sairam! How can I help you today? Or ask me in Telugu!</p>
+                </div>
+            </div>
+             <!-- Example user message -->
+            <div class="mb-4 flex justify-end">
+                <div class="bg-orange-500 text-white rounded-lg py-2 px-4 inline-block max-w-xs">
+                    <p>Hello!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-4 border-t border-gray-200">
+            <!-- 
+              Updated input group to match the image.
+              - A single flex container with a border and rounded-full.
+              - The input field has no border itself.
+              - The button is styled to match.
+            -->
+            <div class="flex items-center border border-gray-300 rounded-full p-1 focus-within:ring-2 focus-within:ring-orange-400">
+                <input type="text" id="chat-input" placeholder="Type your message..." class="w-full px-4 py-2 border-none focus:outline-none focus:ring-0 bg-transparent text-gray-800">
+                <button id="send-btn" class="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 focus:outline-none">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <footer class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4">
+    <!-- Top Footer Grid -->
+    <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-4 mb-8">
+      <!-- Logo and Description -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 flex items-center">
+          <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          SSSDC–JCL
+        </h3>
+        <p class="text-gray-400 text-sm mb-4">
+          Empowering communities through skill development inspired by Sri Sathya Sai Baba's teachings of love, service, and human values.
+        </p>
+        <div class="flex space-x-3">
+          <a href="https://www.facebook.com/profile.php?id=61579270434231" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://x.com/Srisathyas48205" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/srisathyasai_skill_dev/" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.youtube.com/@srisathyaasai_skill.dev_centre" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="index.html" class="text-gray-400 hover:text-orange-500">Home</a></li>
+          <li><a href="about.html" class="text-gray-400 hover:text-orange-500">About Us</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Programs</a></li>
+          <li><a href="gallery.html" class="text-gray-400 hover:text-orange-500">Gallery</a></li>
+          <li><a href="join.html" class="text-gray-400 hover:text-orange-500">Join Us</a></li>
+          <li><a href="contact.html" class="text-gray-400 hover:text-orange-500">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Program List -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Our Programs</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Tailoring & Maggam Work</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Beautician Training</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Electrical & Wiring</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Computer Basics</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Soft Skills</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Contact Us</h4>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li class="flex items-start">
+            <i class="fas fa-map-marker-alt mr-2 mt-1 text-orange-500"></i>
+            <span>Jadcherla, Mahabubnagar, Telangana - 509301, India</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-phone-alt mr-2 mt-1 text-orange-500"></i>
+            <span>+91 8555 287239</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-envelope mr-2 mt-1 text-orange-500"></i>
+            <span>srisathyasaiskilldevelopment@gmail.com</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Footer Bar -->
+    <div class="border-t border-gray-800 pt-4 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-400">
+      <p class="mb-2 sm:mb-0">© 2025 Sri Sathya Sai Skill Development Centre. All rights reserved.</p>
+      <div class="flex space-x-4">
+        <a href="#" class="hover:text-orange-500">Privacy Policy</a>
+        <a href="#" class="hover:text-orange-500">Terms of Service</a>
+        <a href="#" class="hover:text-orange-500">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+    <script>
+        // Team Data for Dynamic Population
+        const teamData = [
+            
+            {
+                image: "Images/About US/Kiran.jpg",
+                name: "Kiran Kumar",
+                role: "State Skill Development Coordinator",
+                description: "Industry expert in vocational training"
+            },
+            
+            {
+                image: "Images/About US/Madhavai Latha.jpg",
+                name: "Madhavi Latha",
+                role: "State Incharge for RVTC",
+                description: "Connecting students with opportunities"
+            },
+            
+    
+
+            {
+                image: "Images/About US/Nagaraju.jpg",
+                name: "Nagaraju",
+                role: "State Youth Coordinator",
+                description: "Spiritual counselor"
+            },
+
+            {
+                image: "Images/About US/Amarnath.jpg",
+                name: "Amarnath",
+                role: "Trainer",
+                description: "Connecting students with opportunities"
+            },
+
+            
+
+            
+
+        ];
+
+        // Dynamically Populate Team Section
+        function populateTeam() {
+            const teamContainer = document.getElementById('team-container');
+            teamData.forEach(member => {
+                const teamCard = document.createElement('div');
+                teamCard.className = 'team-card';
+                teamCard.innerHTML = `
+                    <div class="overflow-hidden">
+                        <img src="${member.image}" alt="${member.name}" class="team-image w-full">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-1">${member.name}</h3>
+                        <p class="text-orange-500 mb-3">${member.role}</p>
+                        <p class="text-gray-600 text-sm">${member.description}</p>
+                    </div>
+                `;
+                teamContainer.appendChild(teamCard);
+            });
+        }
+
+        // GSAP Animations and Fallback
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.gsap || !window.ScrollTrigger) {
+                console.error('GSAP or ScrollTrigger failed to load');
+                // Fallback: Ensure value cards and other elements are visible
+                document.querySelectorAll('.value-card, .timeline-item, .team-card, .quote-card').forEach(el => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'none';
+                });
+            } else {
+                gsap.registerPlugin(ScrollTrigger);
+
+                // Header animation
+                gsap.from('.animate-header', {
+                    duration: 1,
+                    y: 50,
+                    opacity: 0,
+                    ease: 'power3.out',
+                    stagger: 0.3
+                });
+
+                // Mission section animations (excluding value-card)
+                gsap.from('#our-mission h2', {
+                    duration: 1,
+                    y: 30,
+                    opacity: 0,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: '#our-mission',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+
+                gsap.from('#our-mission p', {
+                    duration: 1,
+                    y: 30,
+                    opacity: 0,
+                    delay: 0.2,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: '#our-mission',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+
+                gsap.from('#our-mission .bg-orange-500.h-2', {
+                    duration: 1.5,
+                    width: 0,
+                    ease: 'power3.out',
+                    stagger: 0.3,
+                    scrollTrigger: {
+                        trigger: '#our-mission .bg-white.p-6',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+
+                // Timeline animations
+                gsap.from('.timeline-item', {
+                    duration: 1,
+                    x: -50,
+                    opacity: 0,
+                    stagger: 0.3,
+                    scrollTrigger: {
+                        trigger: '.timeline',
+                        start: 'top 70%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+
+                // Team animations
+                gsap.from('.team-card', {
+                    duration: 1,
+                    y: 50,
+                    opacity: 0,
+                    stagger: 0.2,
+                    scrollTrigger: {
+                        trigger: '#team-container',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+
+                // Founder section animations
+                gsap.from('.founder-section img', {
+                    duration: 1,
+                    scale: 0.9,
+                    opacity: 0,
+                    scrollTrigger: {
+                        trigger: '.founder-section',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+
+                gsap.from('.quote-card', {
+                    duration: 1,
+                    y: 50,
+                    opacity: 0,
+                    scrollTrigger: {
+                        trigger: '.quote-card',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+            }
+
+            // Mobile Menu Toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                if (!window.gsap) {
+                    console.warn('GSAP not loaded, skipping mobile menu animation');
+                    return;
+                }
+                gsap.fromTo(mobileMenu.querySelectorAll('li'), 
+                    { x: 50, opacity: 0 }, 
+                    { x: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
+                );
+            });
+
+            // Populate team
+            populateTeam();
+        });
+    </script>
+</body>
+
+</html>
+
+

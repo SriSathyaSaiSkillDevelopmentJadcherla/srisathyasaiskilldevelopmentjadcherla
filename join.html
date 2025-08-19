@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Us - Sri Sathya Sai Skill Development Centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="chatbot.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F97316;
+            --primary-dark: #EA580C;
+            --secondary: #1E293B;
+            --light: #FFF7ED;
+            --accent: #F59E0B;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--secondary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after,
+        .nav-link.active:after {
+            width: 100%;
+        }
+        
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.5;
+        }
+        
+        .hero-section {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            position: relative;
+        }
+        
+        .glow-on-hover {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0);
+        }
+        
+        .glow-on-hover:hover {
+            box-shadow: 0 0 25px rgba(249, 115, 22, 0.5);
+        }
+        
+        .donation-option {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .donation-option:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .donation-option.active {
+            border-color: var(--primary);
+            background-color: rgba(249, 115, 22, 0.1);
+        }
+        
+        .form-input {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .form-input:focus {
+            border-bottom-color: var(--primary);
+        }
+
+        .form-error {
+            color: #dc2626;
+            font-size: 0.85rem;
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .form-error.show {
+            height: auto;
+            opacity: 1;
+            margin-top: 5px;
+        }
+        
+        .lotus-animation {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            display: none;
+        }
+        
+        .lotus-animation svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: bloom 2s ease-out forwards;
+        }
+        
+        @keyframes bloom {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .quote-card {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quote-card:before {
+            content: '"';
+            position: absolute;
+            top: -30px;
+            left: 10px;
+            font-size: 120px;
+            color: rgba(255, 255, 255, 0.1);
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 2s infinite;
+        }
+        
+        @keyframes sparkle {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* Orange Theme for Hero Section Elements */
+        .hero-heading {
+            color: var(--light);
+            -webkit-text-stroke: 1.2px var(--primary);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+       .hero-quote {
+            color: #FFFFFF;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+            font-weight: 600;
+        }
+
+
+        .hero-button {
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+        }
+
+        .hero-button:hover {
+            box-shadow: 0 0 30px rgba(249, 115, 22, 0.7);
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm fixed w-full z-50 top-0">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="flex items-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                       <div class="hero-banner-image">
+                        <img src="Images\Logo\logo.jpg" alt="Institute Logo">
+                    </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">Sri Sathya Sai</h1>
+                        <p class="text-xs text-orange-500 font-medium">Skill Development Centre, Telangana</p>
+                    </div>
+                </a>
+                
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="index.html" class="nav-link text-gray-600">Home</a></li>
+                        <li><a href="about.html" class="nav-link text-gray-600">About Us</a></li>
+                        <li><a href="programs.html" class="nav-link text-gray-600">Programs</a></li>
+                        <li><a href="gallery.html" class="nav-link text-gray-600">Gallery</a></li>
+                        <li><a href="join.html" class="nav-link text-orange-500 font-medium active">Join Us</a></li>
+                        <li><a href="contact.html" class="nav-link text-gray-600">Contact</a></li>
+                        <li><a href="register.html" class="ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                    </ul>
+                </nav>
+                
+                <button class="md:hidden text-gray-600 focus:outline-none" id="mobileMenuBtn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="md:hidden hidden py-4" id="mobileMenu">
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Home</a></li>
+                    <li><a href="about.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">About Us</a></li>
+                    <li><a href="programs.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Programs</a></li>
+                    <li><a href="gallery.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Gallery</a></li>
+                    <li><a href="join.html" class="block px-4 py-2 text-orange-500 font-medium hover:bg-orange-50 rounded">Join Us</a></li>
+                    <li><a href="contact.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Contact</a></li>
+                    <li><a href="register.html" class="block mt-4 px-4 py-2 bg-orange-500 text-white text-center rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+<main class="flex-grow">
+  <section
+    class="relative flex items-center justify-center bg-gradient-to-r from-orange-500 to-amber-500 text-white text-center overflow-hidden
+           py-12 sm:py-16 md:py-20 lg:py-24">
+
+    <!-- Background Particles -->
+    <div id="particles-js" class="absolute inset-0 z-0"></div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 px-4 w-full max-w-3xl mx-auto">
+      <!-- Heading -->
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-snug drop-shadow-lg mb-3">
+        Serve With Divine Love
+      </h1>
+
+      <!-- Quote -->
+      <p class="text-base sm:text-lg md:text-xl font-medium max-w-2xl mx-auto drop-shadow mb-5">
+        "The best way to find yourself is to lose yourself in the service of others." — Sri Sathya Sai Baba
+      </p>
+
+      <!-- CTA Button -->
+      <a href="#volunteer-form"
+         class="inline-flex items-center gap-2 px-6 py-3 bg-white text-orange-600 rounded-full font-semibold
+                text-base sm:text-lg shadow-md hover:bg-gray-100 transition">
+        <i class="fas fa-hands-helping"></i> Volunteer Now
+      </a>
+    </div>
+
+    <!-- Decorative Sparkles -->
+    <div class="absolute top-1/4 left-1/4 w-2.5 h-2.5 bg-white/40 rounded-full animate-ping" style="animation-delay:.3s;"></div>
+    <div class="absolute top-1/3 right-1/3 w-2.5 h-2.5 bg-white/40 rounded-full animate-ping" style="animation-delay:.7s;"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-2.5 h-2.5 bg-white/40 rounded-full animate-ping" style="animation-delay:1.1s;"></div>
+
+  </section>
+</main>
+
+
+
+        <section class="py-10 bg-white why-join-us-section">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto text-center mb-10">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Join the Movement to Uplift Lives With Skills and Opportunity</h2>
+                    <div class="w-20 h-1 bg-orange-500 mx-auto mb-6"></div>
+                    <p class="text-gray-600">Join us in empowering youth and women by helping them learn skills that improve their lives.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-orange-50 p-8 rounded-xl text-center">
+                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                            <i class="fas fa-heart text-orange-500 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Experience Divine Joy</h3>
+                        <p class="text-gray-600">Feel the bliss of selfless service as you help transform lives through education</p>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-8 rounded-xl text-center">
+                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                            <i class="fas fa-hands text-orange-500 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Make Real Impact</h3>
+                        <p class="text-gray-600">Directly contribute to empowering underprivileged youth with employable skills</p>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-8 rounded-xl text-center">
+                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                            <i class="fas fa-user-graduate text-orange-500 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Grow Spiritually</h3>
+                        <p class="text-gray-600">Develop your own character through Sai's teachings of love and service</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       <section id="volunteer-form" class="py-20 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden max-w-6xl mx-auto">
+      <div class="flex flex-col md:flex-row">
+        <!-- Left Side: Image + Info -->
+        <div class="w-full md:w-1/2 bg-gradient-to-br from-orange-400 to-amber-500 p-8 md:p-12 text-white flex flex-col justify-center relative">
+          <div class="absolute inset-0 opacity-10" style="background-image: url('https://www.sssihl.edu.in/wp-content/themes/sssihl/images/sai-opacity.png'); background-repeat: repeat;"></div>
+          <div class="relative z-10">
+            <div class="flex justify-center mb-6">
+              <img src="Images/Join US/Sai.jpg" alt="Sri Sathya Sai Baba" class="rounded-lg shadow-lg w-full max-w-xs border-4 border-white">
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold mb-4 text-center md:text-left">Serve as Sai's Hands</h2>
+            <p class="text-base md:text-lg mb-6 text-center md:text-left">“Help Ever, Hurt Never” — Join our team of dedicated volunteers and experience the joy of selfless service.</p>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-check-circle mt-1 mr-3 text-amber-200"></i> Flexible time commitments
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle mt-1 mr-3 text-amber-200"></i> Training provided for all roles
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle mt-1 mr-3 text-amber-200"></i> Certificate of service upon completion
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right Side: Form -->
+        <div class="w-full md:w-1/2 p-8 md:p-12">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center md:text-left">Volunteer Application</h3>
+          <form 
+            id="volunteerForm"
+            action="https://formbold.com/s/3pOGZ"
+            method="POST"
+            class="space-y-6">
+            
+            <div>
+              <label for="name" class="block text-gray-700 mb-1">Full Name*</label>
+              <input type="text" id="name" name="Full Name" class="form-input w-full border border-gray-300 px-4 py-2 rounded" required>
+            </div>
+
+            <div>
+              <label for="email" class="block text-gray-700 mb-1">Email*</label>
+              <input type="email" id="email" name="Email" class="form-input w-full border border-gray-300 px-4 py-2 rounded" required>
+            </div>
+
+            <div>
+              <label for="phone" class="block text-gray-700 mb-1">Phone*</label>
+              <input type="tel" id="phone" name="Phone Number" class="form-input w-full border border-gray-300 px-4 py-2 rounded" required>
+            </div>
+
+            <div>
+              <label for="skills" class="block text-gray-700 mb-1">Skills/Expertise*</label>
+              <select id="skills" name="Skills" class="form-input w-full border border-gray-300 px-4 py-2 rounded" required>
+                <option value="">Select your skills</option>
+                <option value="teaching">Teaching/Training</option>
+                <option value="technical">Technical Skills</option>
+                <option value="counseling">Counseling</option>
+                <option value="admin">Administrative</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="availability" class="block text-gray-700 mb-1">Availability*</label>
+              <select id="availability" name="Availability" class="form-input w-full border border-gray-300 px-4 py-2 rounded" required>
+                <option value="">Select availability</option>
+                <option value="weekdays">Weekdays</option>
+                <option value="weekends">Weekends</option>
+                <option value="both">Both</option>
+                <option value="flexible">Flexible</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="message" class="block text-gray-700 mb-1">Why do you want to volunteer with us?*</label>
+              <textarea id="message" name="Message" rows="3" class="form-input w-full border border-gray-300 px-4 py-2 rounded" required></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded transition-all">
+              Submit With Love <i class="fas fa-heart ml-2"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+        <section class="bg-gradient-to-r from-orange-400 to-amber-500 text-white text-center py-10 px-4">
+  <div class="container mx-auto max-w-3xl">
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+      Ready to Serve With Divine Love?
+    </h2>
+    <p class="text-base sm:text-lg md:text-xl mb-6 leading-relaxed">
+    Join hands with us in loving service to others, guided by the timeless teachings of Sri Sathya Sai.   </p>
+
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+      <a href="#volunteer-form"
+         class="px-6 py-3 bg-white text-orange-600 rounded-full hover:bg-orange-100 transition font-medium text-sm sm:text-base">
+        <i class="fas fa-user-plus mr-2"></i> Volunteer Application
+      </a>
+
+      <a href="contact.html"
+         class="px-6 py-3 border-2 border-white text-white rounded-full hover:bg-white hover:text-orange-600 transition font-medium text-sm sm:text-base">
+        <i class="fas fa-phone-alt mr-2"></i> Contact Us First
+      </a>
+    </div>
+  </div>
+</section>
+
+    </main>
+<div id="chat-container" class="fixed bottom-5 right-5 z-50">
+    <!-- The circular icon that toggles the chat window -->
+    <button id="chat-icon" class="bg-orange-500 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center focus:outline-none hover:bg-orange-600 transition-transform duration-300 ease-in-out">
+        <i class="fas fa-comments text-2xl"></i>
+    </button>
+
+    <!-- 
+      The chat window itself.
+      It's hidden by default and its visibility is toggled by JavaScript.
+      - Width increased to w-[26rem] (416px)
+      - Height decreased to h-[36rem] (576px)
+      - Increased rounding to rounded-2xl
+    -->
+    <div id="chat-window" class="hidden absolute bottom-24 right-0 w-[26rem] bg-white rounded-2xl shadow-2xl flex flex-col transition-all duration-300 ease-in-out" style="height: 36rem;">
+        
+        <!-- Header Section -->
+        <div class="bg-orange-500 text-white p-4 rounded-t-2xl flex justify-between items-center">
+            <h3 class="font-bold text-lg">Chat Bot</h3>
+            <button id="close-chat" class="text-2xl font-bold focus:outline-none hover:opacity-75">&times;</button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto">
+            <!-- Example initial message -->
+            <div class="mb-4 flex">
+                <div class="bg-gray-100 text-gray-800 rounded-lg py-2 px-4 inline-block max-w-xs">
+                    <p>Sairam! How can I help you today? Or ask me in Telugu!</p>
+                </div>
+            </div>
+             <!-- Example user message -->
+            <div class="mb-4 flex justify-end">
+                <div class="bg-orange-500 text-white rounded-lg py-2 px-4 inline-block max-w-xs">
+                    <p>Hello!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-4 border-t border-gray-200">
+            <!-- 
+              Updated input group to match the image.
+              - A single flex container with a border and rounded-full.
+              - The input field has no border itself.
+              - The button is styled to match.
+            -->
+            <div class="flex items-center border border-gray-300 rounded-full p-1 focus-within:ring-2 focus-within:ring-orange-400">
+                <input type="text" id="chat-input" placeholder="Type your message..." class="w-full px-4 py-2 border-none focus:outline-none focus:ring-0 bg-transparent text-gray-800">
+                <button id="send-btn" class="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 focus:outline-none">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+  <footer class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4">
+    <!-- Top Footer Grid -->
+    <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-4 mb-8">
+      <!-- Logo and Description -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 flex items-center">
+          <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          SSSDC–JCL
+        </h3>
+        <p class="text-gray-400 text-sm mb-4">
+          Empowering communities through skill development inspired by Sri Sathya Sai Baba's teachings of love, service, and human values.
+        </p>
+        <div class="flex space-x-3">
+          <a href="https://www.facebook.com/profile.php?id=61579270434231" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://x.com/Srisathyas48205" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/srisathyasai_skill_dev/" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.youtube.com/@srisathyaasai_skill.dev_centre" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="index.html" class="text-gray-400 hover:text-orange-500">Home</a></li>
+          <li><a href="about.html" class="text-gray-400 hover:text-orange-500">About Us</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Programs</a></li>
+          <li><a href="gallery.html" class="text-gray-400 hover:text-orange-500">Gallery</a></li>
+          <li><a href="join.html" class="text-gray-400 hover:text-orange-500">Join Us</a></li>
+          <li><a href="contact.html" class="text-gray-400 hover:text-orange-500">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Program List -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Our Programs</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Tailoring & Maggam Work</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Beautician Training</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Electrical & Wiring</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Computer Basics</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Soft Skills</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Contact Us</h4>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li class="flex items-start">
+            <i class="fas fa-map-marker-alt mr-2 mt-1 text-orange-500"></i>
+            <span>Jadcherla, Mahabubnagar, Telangana - 509301, India</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-phone-alt mr-2 mt-1 text-orange-500"></i>
+            <span>+91 8555 287239</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-envelope mr-2 mt-1 text-orange-500"></i>
+            <span>srisathyasaiskilldevelopment@gmail.com</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Footer Bar -->
+    <div class="border-t border-gray-800 pt-4 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-400">
+      <p class="mb-2 sm:mb-0">© 2025 Sri Sathya Sai Skill Development Centre. All rights reserved.</p>
+      <div class="flex space-x-4">
+        <a href="#" class="hover:text-orange-500">Privacy Policy</a>
+        <a href="#" class="hover:text-orange-500">Terms of Service</a>
+        <a href="#" class="hover:text-orange-500">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (!window.gsap) {
+                console.warn('GSAP not loaded, skipping mobile menu animation');
+                return;
+            }
+            gsap.fromTo(mobileMenu.querySelectorAll('li'), 
+                { x: 50, opacity: 0 }, 
+                { x: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
+            );
+        });
+
+        // Initialize GSAP animations and Particles.js
+        document.addEventListener('DOMContentLoaded', () => {
+            // GSAP Fallback
+            if (!window.gsap || !window.ScrollTrigger) {
+                console.error('GSAP or ScrollTrigger failed to load');
+                document.querySelectorAll('#volunteer-form .bg-white').forEach(el => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'none';
+                });
+                return;
+            }
+
+            // Register GSAP ScrollTrigger plugin
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Hero Section animations
+            gsap.from('.hero-heading', {
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                ease: 'power3.out'
+            });
+            
+            gsap.from('.hero-quote', {
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                delay: 0.3,
+                ease: 'power3.out'
+            });
+            
+            gsap.from('.hero-button', {
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                delay: 0.6,
+                ease: 'power3.out'
+            });
+
+            // Why Join Us Section animations (header only)
+            gsap.from('.why-join-us-section .max-w-4xl', {
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '.why-join-us-section',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            });
+
+            // Volunteer Form Section animations
+            gsap.from('#volunteer-form .bg-white', {
+                duration: 1.2,
+                opacity: 0,
+                y: 50,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '#volunteer-form',
+                    start: 'top 70%',
+                    toggleActions: 'play none none none'
+                }
+            });
+
+            // Final CTA Section animations
+            gsap.from('.final-cta-section h2, .final-cta-section p, .final-cta-section a', {
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                stagger: 0.2,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '.final-cta-section',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            });
+
+            // Particles.js Initialization with Orange Theme
+            if (window.particlesJS) {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 80, density: { enable: true, value_area: 800 } },
+                        color: { value: ['#F97316', '#F59E0B'] },
+                        shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
+                        opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1, opacity_min: 0.2 } },
+                        size: { value: 4, random: true, anim: { enable: true, speed: 2, size_min: 0.2 } },
+                        line_linked: { enable: true, distance: 150, color: '#F97316', opacity: 0.5, width: 1 },
+                        move: { enable: true, speed: 2, direction: 'none', random: true, straight: false, out_mode: 'out' }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                        modes: { grab: { distance: 140, line_linked: { opacity: 1 } }, push: { particles_nb: 4 } }
+                    },
+                    retina_detect: true
+                });
+            } else {
+                console.warn('Particles.js not loaded');
+            }
+
+            // Volunteer Form Validation
+            const form = document.getElementById('volunteerForm');
+            const formSuccess = document.getElementById('formSuccess');
+            const lotusAnimation = formSuccess.querySelector('.lotus-animation');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let isValid = true;
+
+                // Reset error messages
+                document.querySelectorAll('.form-error').forEach(error => {
+                    error.classList.remove('show');
+                    error.textContent = '';
+                });
+
+                // Validate inputs
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const skills = document.getElementById('skills').value;
+                const availability = document.getElementById('availability').value;
+                const message = document.getElementById('message').value.trim();
+
+                if (!name) {
+                    document.getElementById('name-error').textContent = 'Please enter your full name';
+                    document.getElementById('name-error').classList.add('show');
+                    isValid = false;
+                }
+
+                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    document.getElementById('email-error').textContent = 'Please enter a valid email address';
+                    document.getElementById('email-error').classList.add('show');
+                    isValid = false;
+                }
+
+                if (!phone || !/^\+?\d{10,15}$/.test(phone.replace(/\D/g, ''))) {
+                    document.getElementById('phone-error').textContent = 'Please enter a valid phone number';
+                    document.getElementById('phone-error').classList.add('show');
+                    isValid = false;
+                }
+
+                if (!skills) {
+                    document.getElementById('skills-error').textContent = 'Please select your skills';
+                    document.getElementById('skills-error').classList.add('show');
+                    isValid = false;
+                }
+
+                if (!availability) {
+                    document.getElementById('availability-error').textContent = 'Please select your availability';
+                    document.getElementById('availability-error').classList.add('show');
+                    isValid = false;
+                }
+
+                if (!message) {
+                    document.getElementById('message-error').textContent = 'Please tell us why you want to volunteer';
+                    document.getElementById('message-error').classList.add('show');
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    const formData = new FormData(form);
+                    
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            form.classList.add('hidden');
+                            formSuccess.classList.remove('hidden');
+                            lotusAnimation.style.display = 'block';
+                            form.reset(); // Reset form fields
+                            console.log('Form submitted successfully to Formbold.');
+                        } else {
+                            response.json().then(data => {
+                                if (Object.hasOwn(data, 'errors')) {
+                                    alert(data.errors.map(error => error.message).join(', '));
+                                } else {
+                                    alert('Oops! There was a problem submitting your form.');
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Oops! An unexpected error occurred.');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Sri Sathya Sai Skill Development Centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="chatbot.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F97316;
+            --primary-dark: #EA580C;
+            --secondary: #1E293B;
+            --light: #FFF7ED;
+            --accent: #F59E0B;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--secondary);
+            line-height: 1.6;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after,
+        .nav-link.active:after {
+            width: 100%;
+        }
+        
+        .form-input {
+            transition: all 0.3s ease;
+            border: 1px solid #E5E7EB;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+        }
+        
+        .social-icon {
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(249, 115, 22, 0.1);
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px);
+            background: var(--primary);
+            color: white;
+        }
+        
+        .contact-card {
+            transition: all 0.3s ease;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(249, 115, 22, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .map-container {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-error {
+            color: #DC2626;
+            font-size: 0.85rem;
+            height: 0;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-error.show {
+            height: auto;
+            opacity: 1;
+            margin-top: 5px;
+        }
+        
+        .submit-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .submit-btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s ease;
+        }
+        
+        .submit-btn:hover:after {
+            left: 100%;
+        }
+        
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Floating animation for contact cards */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-delay-1 {
+            animation-delay: 0.5s;
+        }
+        
+        .floating-delay-2 {
+            animation-delay: 1s;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-info {
+                order: 2;
+            }
+            
+            .contact-form {
+                order: 1;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="flex items-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                        <div class="hero-banner-image">
+                            <img src="Images\Logo\logo.jpg" alt="Institute Logo">
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">Sri Sathya Sai</h1>
+                        <p class="text-xs text-orange-500 font-medium">Skill Development Centre, Telangana</p>
+                    </div>
+                </a>
+                
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="index.html" class="nav-link text-gray-600 hover:text-orange-500">Home</a></li>
+                        <li><a href="about.html" class="nav-link text-gray-600 hover:text-orange-500">About Us</a></li>
+                        <li><a href="programs.html" class="nav-link text-gray-600 hover:text-orange-500">Programs</a></li>
+                        <li><a href="gallery.html" class="nav-link text-gray-600 hover:text-orange-500">Gallery</a></li>
+                        <li><a href="join.html" class="nav-link text-gray-600 hover:text-orange-500">Join Us</a></li>
+                        <li><a href="contact.html" class="nav-link text-orange-500 font-medium active">Contact</a></li>
+                        <li><a href="register.html" class="ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                    </ul>
+                </nav>
+                
+                <button class="md:hidden text-gray-600 focus:outline-none" id="mobileMenuBtn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="md:hidden hidden py-4" id="mobileMenu">
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Home</a></li>
+                    <li><a href="about.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">About Us</a></li>
+                    <li><a href="programs.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Programs</a></li>
+                    <li><a href="gallery.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Gallery</a></li>
+                    <li><a href="join.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Join Us</a></li>
+                    <li><a href="contact.html" class="block px-4 py-2 text-orange-500 font-medium hover:bg-orange-50 rounded">Contact</a></li>
+                    <li><a href="register.html" class="block mt-4 px-4 py-2 bg-orange-500 text-white text-center rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <section class="relative py-20 bg-gradient-to-r from-orange-50 to-amber-50 overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10">
+                <div class="absolute top-20 left-20 w-64 h-64 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+                <div class="absolute bottom-20 right-20 w-64 h-64 bg-amber-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+            </div>
+            
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Got In Touch With Us</h1>
+                    <p class="text-lg text-gray-600 mb-8">"Reach out to join our mission of empowerment through skill development and values education."</p>
+                    <div class="flex justify-center space-x-4">
+                        <a href="#contact-form" class="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition font-medium">Send a Message</a>
+                        <a href="#contact-info" class="px-6 py-3 border border-orange-500 text-orange-500 rounded-lg hover:bg-orange-50 transition font-medium">Contact Info</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-10 bg-white" id="contact-info">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">How Can We Help You?</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Choose the most convenient way to connect with our team. We're here to answer your questions and guide you through our programs.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="contact-card p-8 text-center floating">
+                        <div class="contact-icon mx-auto">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Call Us</h3>
+                        <p class="text-gray-600 mb-4">Speak directly with our support team during business hours.</p>
+                        <a href="tel:+918555287239" class="text-orange-500 font-medium hover:text-orange-600 transition">+91 8555 287239</a>
+                    </div>
+                    
+                    <div class="contact-card p-8 text-center floating floating-delay-1">
+                        <div class="contact-icon mx-auto">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Email Us</h3>
+                        <p class="text-gray-600 mb-4">Send us your queries and we'll respond within 24 hours.</p>
+                        <a href="mailto:srisathyasaiskilldevelopment@gmail.com" class="text-orange-500 font-medium hover:text-orange-600 transition">srisathyasaiskilldevelopment@gmail.com</a>
+                    </div>
+                    
+                    <div class="contact-card p-8 text-center floating floating-delay-2">
+                        <div class="contact-icon mx-auto">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Visit Us</h3>
+                        <p class="text-gray-600 mb-4">Schedule a visit to our centre in Jadcherla, Telangana.</p>
+                        <a href="#map" class="text-orange-500 font-medium hover:text-orange-600 transition">View on Map</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-gray-50" id="contact-form">
+            <div class="container mx-auto px-4">
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="md:flex">
+                            <div class="md:w-2/5 bg-gradient-to-br from-orange-500 to-amber-500 p-8 md:p-12 text-white">
+                                <h2 class="text-2xl font-bold mb-6">Contact Information</h2>
+                                <p class="mb-8">Fill out the form or use these details to reach us. We're happy to help with any questions about our programs.</p>
+                                
+                                <div class="space-y-6">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <i class="fas fa-map-marker-alt text-orange-200"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h3 class="font-semibold">Our Location</h3>
+                                            <p class="text-orange-100">Jadcherla, Mahabubnagar, Telangana - 509301, India</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <i class="fas fa-phone-alt text-orange-200"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h3 class="font-semibold">Phone Number</h3>
+                                            <p class="text-orange-100">+91 8555 287239</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <i class="fas fa-envelope text-orange-200"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h3 class="font-semibold">Email Address</h3>
+                                            <p class="text-orange-100">srisathyasaiskilldevelopment@gmail.com</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-10">
+                                    <h3 class="font-semibold mb-4">Follow Us</h3>
+                                    <div class="flex space-x-4">
+                                        <a href="https://www.facebook.com/profile.php?id=61579270434231" class="social-icon hover:bg-white hover:text-orange-500">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </a>
+                                        <a href="#" class="social-icon hover:bg-white hover:text-orange-500">
+                                            <i class="fab fa-twitter"></i>
+                                        </a>
+                                        <a href="https://www.instagram.com/srisathyasai_skill_dev/" class="social-icon hover:bg-white hover:text-orange-500">
+                                            <i class="fab fa-instagram"></i>
+                                        </a>
+                                        <a href="https://www.youtube.com/@srisathyaasai_skill.dev_centre" class="social-icon hover:bg-white hover:text-orange-500">
+                                            <i class="fab fa-youtube"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="md:w-3/5 p-8 md:p-12">
+                                <h2 class="text-2xl font-bold text-gray-800 mb-2">Send Us a Message</h2>
+                                <p class="text-gray-600 mb-8">Have questions about our programs? Want to volunteer? Fill out the form below and we'll get back to you soon.</p>
+                                
+                                <form id="contactForm" action="https://formbold.com/s/9R5RA" method="POST">
+                                    <input type="hidden" name="_subject" value="New Contact Message from SSSDC–JCL Website">
+                                    <input type="hidden" name="_captcha" value="false"> 
+                                    <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html"> 
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name*</label>
+                                            <input type="text" id="name" name="name" class="form-input w-full px-4 py-3 rounded-lg" placeholder="John Doe" required>
+                                            <p id="name-error" class="form-error">Please enter your name</p>
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address*</label>
+                                            <input type="email" id="email" name="email" class="form-input w-full px-4 py-3 rounded-lg" placeholder="your@email.com" required>
+                                            <p id="email-error" class="form-error">Please enter a valid email</p>
+                                        </div>
+                                        
+                                        <div class="md:col-span-2">
+                                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject*</label>
+                                            <input type="text" id="subject" name="subject" class="form-input w-full px-4 py-3 rounded-lg" placeholder="What's this about?" required>
+                                            <p id="subject-error" class="form-error">Please enter a subject</p>
+                                        </div>
+                                        
+                                        <div class="md:col-span-2">
+                                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Your Message*</label>
+                                            <textarea id="message" name="message" rows="5" class="form-input w-full px-4 py-3 rounded-lg" placeholder="How can we help you?" required></textarea>
+                                            <p id="message-error" class="form-error">Please enter your message</p>
+                                        </div>
+                                        
+                                        <div class="md:col-span-2">
+                                            <button type="submit" class="submit-btn w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition font-medium flex items-center justify-center">
+                                                <span class="submit-text">Send Message</span>
+                                                <div class="loader"></div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-white" id="map">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Find Our Centre</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Visit us at our skill development centre in Jadcherla. We welcome visitors during working hours.</p>
+                </div>
+                
+                <div class="map-container max-w-6xl mx-auto">
+                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1975.2824955374547!2d78.14729441054658!3d16.756702815795293!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bca3b0009951cdb%3A0x521855d10961e6df!2sSri%20Sathya%20Sai%20Skill%20Development%20Jadcherla!5e1!3m2!1sen!2sin!4v1753938638530!5m2!1sen!2sin" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-lg text-gray-800 mb-2">Working Hours</h3>
+                        <p class="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                        <p class="text-gray-600">Saturday: 9:00 AM - 1:00 PM</p>
+                        <p class="text-gray-600">Sunday: Closed</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-lg text-gray-800 mb-2">Public Transport</h3>
+                        <p class="text-gray-600">Nearest Bus Stop: 500m</p>
+                        <p class="text-gray-600">Nearest Railway Station: 3km</p>
+                        <p class="text-gray-600">Parking Available</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-lg text-gray-800 mb-2">Accessibility</h3>
+                        <p class="text-gray-600">Wheelchair Accessible</p>
+                        <p class="text-gray-600">Restrooms Available</p>
+                        <p class="text-gray-600">Drinking Water</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">Frequently Asked Questions</h2>
+                        <p class="text-gray-600">Find quick answers to common questions about our programs and services.</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                            <button class="faq-toggle w-full flex justify-between items-center p-6 text-left">
+                                <h3 class="font-medium text-gray-800">How can I enroll in a skill development program?</h3>
+                                <i class="fas fa-chevron-down text-orange-500 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-content px-6 pb-6 hidden">
+                                <p class="text-gray-600">You can enroll by visiting our centre during working hours, calling our enrollment hotline at +91 8555 287239, or filling out the online registration form on our website. Our staff will guide you through the process and help you choose the right program based on your interests and skills.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                            <button class="faq-toggle w-full flex justify-between items-center p-6 text-left">
+                                <h3 class="font-medium text-gray-800">Are there any fees for the training programs?</h3>
+                                <i class="fas fa-chevron-down text-orange-500 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-content px-6 pb-6 hidden">
+                                <p class="text-gray-600">Most of our basic skill development programs are offered free of charge to economically disadvantaged students. Some advanced programs may have nominal fees to cover material costs. We also offer scholarships for deserving candidates. Please contact us for specific program fee details.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                            <button class="faq-toggle w-full flex justify-between items-center p-6 text-left">
+                                <h3 class="font-medium text-gray-800">What documents do I need to bring for registration?</h3>
+                                <i class="fas fa-chevron-down text-orange-500 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-content px-6 pb-6 hidden">
+                                <p class="text-gray-600">For registration, please bring:
+                                    <ul class="list-disc pl-5 mt-2 space-y-1">
+                                        <li>Aadhaar Card or any government-issued ID proof</li>
+                                        <li>Proof of residence (ration card/electricity bill/etc.)</li>
+                                        <li>2 passport-size photographs</li>
+                                        <li>Income certificate (if applying for free/subsidized programs)</li>
+                                        <li>Educational certificates (for certain programs)</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                            <button class="faq-toggle w-full flex justify-between items-center p-6 text-left">
+                                <h3 class="font-medium text-gray-800">Do you provide placement assistance after training?</h3>
+                                <i class="fas fa-chevron-down text-orange-500 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-content px-6 pb-6 hidden">
+                                <p class="text-gray-600">Yes, we have tie-ups with several local businesses and industries for placement of our trained students. We conduct regular placement drives and also provide entrepreneurship support for those who wish to start their own small businesses. Our placement cell works continuously to create opportunities for our graduates.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                            <button class="faq-toggle w-full flex justify-between items-center p-6 text-left">
+                                <h3 class="font-medium text-gray-800">Can I volunteer or donate to support your programs?</h3>
+                                <i class="fas fa-chevron-down text-orange-500 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-content px-6 pb-6 hidden">
+                                <p class="text-gray-600">We welcome both volunteers and donors to support our mission. Volunteers can help as trainers, mentors, or in administrative roles. Donations help us expand our programs and reach more beneficiaries. Please visit our 'Join Us' or 'Donate' pages for more information, or contact us directly to discuss how you can contribute.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10 text-center">
+                        <p class="text-gray-600 mb-4">Still have questions?</p>
+                        <a href="#contact-form" class="inline-block px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition font-medium">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+<div id="chat-container" class="fixed bottom-5 right-5 z-50">
+    <!-- The circular icon that toggles the chat window -->
+    <button id="chat-icon" class="bg-orange-500 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center focus:outline-none hover:bg-orange-600 transition-transform duration-300 ease-in-out">
+        <i class="fas fa-comments text-2xl"></i>
+    </button>
+
+    <!-- 
+      The chat window itself.
+      It's hidden by default and its visibility is toggled by JavaScript.
+      - Width increased to w-[26rem] (416px)
+      - Height decreased to h-[36rem] (576px)
+      - Increased rounding to rounded-2xl
+    -->
+    <div id="chat-window" class="hidden absolute bottom-24 right-0 w-[26rem] bg-white rounded-2xl shadow-2xl flex flex-col transition-all duration-300 ease-in-out" style="height: 36rem;">
+        
+        <!-- Header Section -->
+        <div class="bg-orange-500 text-white p-4 rounded-t-2xl flex justify-between items-center">
+            <h3 class="font-bold text-lg">Chat Bot</h3>
+            <button id="close-chat" class="text-2xl font-bold focus:outline-none hover:opacity-75">&times;</button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto">
+            <!-- Example initial message -->
+            <div class="mb-4 flex">
+                <div class="bg-gray-100 text-gray-800 rounded-lg py-2 px-4 inline-block max-w-xs">
+                    <p>Sairam! How can I help you today? Or ask me in Telugu!</p>
+                </div>
+            </div>
+             <!-- Example user message -->
+            <div class="mb-4 flex justify-end">
+                <div class="bg-orange-500 text-white rounded-lg py-2 px-4 inline-block max-w-xs">
+                    <p>Hello!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-4 border-t border-gray-200">
+            <!-- 
+              Updated input group to match the image.
+              - A single flex container with a border and rounded-full.
+              - The input field has no border itself.
+              - The button is styled to match.
+            -->
+            <div class="flex items-center border border-gray-300 rounded-full p-1 focus-within:ring-2 focus-within:ring-orange-400">
+                <input type="text" id="chat-input" placeholder="Type your message..." class="w-full px-4 py-2 border-none focus:outline-none focus:ring-0 bg-transparent text-gray-800">
+                <button id="send-btn" class="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 focus:outline-none">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <footer class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4">
+    <!-- Top Footer Grid -->
+    <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-4 mb-8">
+      <!-- Logo and Description -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 flex items-center">
+          <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          SSSDC–JCL
+        </h3>
+        <p class="text-gray-400 text-sm mb-4">
+          Empowering communities through skill development inspired by Sri Sathya Sai Baba's teachings of love, service, and human values.
+        </p>
+        <div class="flex space-x-3">
+          <a href="https://www.facebook.com/profile.php?id=61579270434231" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://x.com/Srisathyas48205" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/srisathyasai_skill_dev/" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.youtube.com/@srisathyaasai_skill.dev_centre" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="index.html" class="text-gray-400 hover:text-orange-500">Home</a></li>
+          <li><a href="about.html" class="text-gray-400 hover:text-orange-500">About Us</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Programs</a></li>
+          <li><a href="gallery.html" class="text-gray-400 hover:text-orange-500">Gallery</a></li>
+          <li><a href="join.html" class="text-gray-400 hover:text-orange-500">Join Us</a></li>
+          <li><a href="contact.html" class="text-gray-400 hover:text-orange-500">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Program List -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Our Programs</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Tailoring & Maggam Work</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Beautician Training</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Electrical & Wiring</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Computer Basics</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Soft Skills</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Contact Us</h4>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li class="flex items-start">
+            <i class="fas fa-map-marker-alt mr-2 mt-1 text-orange-500"></i>
+            <span>Jadcherla, Mahabubnagar, Telangana - 509301, India</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-phone-alt mr-2 mt-1 text-orange-500"></i>
+            <span>+91 8555 287239</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-envelope mr-2 mt-1 text-orange-500"></i>
+            <span>srisathyasaiskilldevelopment@gmail.com</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Footer Bar -->
+    <div class="border-t border-gray-800 pt-4 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-400">
+      <p class="mb-2 sm:mb-0">© 2025 Sri Sathya Sai Skill Development Centre. All rights reserved.</p>
+      <div class="flex space-x-4">
+        <a href="#" class="hover:text-orange-500">Privacy Policy</a>
+        <a href="#" class="hover:text-orange-500">Terms of Service</a>
+        <a href="#" class="hover:text-orange-500">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // FAQ Toggle
+        document.querySelectorAll('.faq-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('i');
+                
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+        
+        // Form Validation and Submission
+        const form = document.getElementById('contactForm');
+        const submitBtn = form.querySelector('.submit-btn');
+        const submitText = form.querySelector('.submit-text');
+        const loader = form.querySelector('.loader');
+
+        const fields = [
+            { id: 'name', errorId: 'name-error', message: 'Please enter your name.', element: document.getElementById('name') },
+            { id: 'email', errorId: 'email-error', message: 'Please enter a valid email address.', regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, element: document.getElementById('email') },
+            { id: 'subject', errorId: 'subject-error', message: 'Please enter a subject.', element: document.getElementById('subject') },
+            { id: 'message', errorId: 'message-error', message: 'Please enter your message.', element: document.getElementById('message') }
+        ];
+
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+            }
+        }
+
+        function hideError(fieldId) {
+            const errorElement = document.getElementById(fieldId);
+            if (errorElement) {
+                errorElement.classList.remove('show');
+                errorElement.textContent = '';
+            }
+        }
+
+        fields.forEach(field => {
+            field.element.addEventListener('input', () => {
+                const value = field.element.value.trim();
+                if (value && (!field.regex || field.regex.test(value))) {
+                    hideError(field.errorId);
+                }
+            });
+
+            field.element.addEventListener('blur', () => {
+                const value = field.element.value.trim();
+                if (!value || (field.regex && !field.regex.test(value))) {
+                    showError(field.errorId, field.message);
+                } else {
+                    hideError(field.errorId);
+                }
+            });
+        });
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+
+            fields.forEach(field => {
+                const value = field.element.value.trim();
+                if (!value || (field.regex && !field.regex.test(value))) {
+                    showError(field.errorId, field.message);
+                    isValid = false;
+                } else {
+                    hideError(field.errorId);
+                }
+            });
+
+            if (isValid) {
+                submitBtn.disabled = true;
+                submitText.textContent = 'Sending...';
+                loader.style.display = 'block';
+
+                const formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Thank you for your message! We will get back to you soon.');
+                        form.reset();
+                    } else {
+                        response.json().then(data => {
+                            if (Object.hasOwn(data, 'errors')) {
+                                alert(data.errors.map(error => error.message).join(', '));
+                            } else {
+                                alert('Oops! There was a problem submitting your form.');
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Oops! An unexpected error occurred.');
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Send Message';
+                    loader.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

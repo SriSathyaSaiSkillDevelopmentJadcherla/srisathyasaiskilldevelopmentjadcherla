@@ -1,0 +1,1214 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Sri Sathya Sai Skill Development Centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="chatbot.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F97316;
+            --primary-dark: #EA580C;
+            --secondary: #1E293B;
+            --light: #FFF7ED;
+            --accent: #F59E0B;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--secondary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding-top: 6rem;
+            padding-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            mix-blend-mode: multiply;
+            filter: blur(80px);
+            opacity: 0;
+            transform: scale(0);
+            will-change: transform, opacity;
+        }
+
+        .hero-content {
+            opacity: 0;
+            transform: translateY(30px);
+            will-change: opacity, transform;
+        }
+
+        /* Gallery Slider Styles */
+        .gallery-row {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+            will-change: opacity, transform;
+        }
+
+        .gallery-title-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-title-wrapper:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.15s ease;
+        }
+
+        .gallery-title-wrapper:hover:after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 1rem;
+        }
+
+        .slider-track {
+            display: flex;
+            gap: 20px;
+            padding: 10px 0;
+            will-change: transform;
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .slider-track {
+            display: flex;
+            gap: 20px;
+            animation: scrollTrack 30s linear infinite;
+        }
+
+        @keyframes scrollTrack {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .slider-item {
+            flex-shrink: 0;
+            width: 320px;
+            height: 400px;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            cursor: pointer;
+            scroll-snap-align: center;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            background-color: white;
+            transform-origin: center center;
+        }
+
+        .slider-item-image,
+        .slider-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .slider-item[data-type="video"] .slider-item-overlay::before {
+            content: '\f144';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: white;
+            opacity: 0.8;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .slider-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 100%);
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.4s ease-out;
+            z-index: 2;
+        }
+
+        .slider-item:hover .slider-item-overlay {
+            transform: translateY(0);
+        }
+
+        .slider-item-overlay h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .slider-item-overlay p {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Navigation Buttons for Slider */
+        .slider-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(249, 115, 22, 0.8);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 30;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: background 0.3s ease, transform 0.3s ease;
+            opacity: 0.9;
+        }
+
+        .slider-nav-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .slider-nav-btn.left { left: 1rem; }
+        .slider-nav-btn.right { right: 1rem; }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-media-wrapper {
+            width: 100%;
+            max-height: 60vh;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+
+        .modal-media-wrapper img,
+        .modal-media-wrapper video {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .modal-text {
+            padding: 1.5rem;
+            color: var(--secondary);
+            overflow-y: auto;
+        }
+
+        .modal-text h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-text p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #4B5563;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            z-index: 1010;
+            transition: color 0.3s ease;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--primary);
+            background: rgba(0,0,0,0.7);
+        }
+
+        /* Footer Animation */
+        footer {
+            opacity: 0;
+            transform: translateY(20px);
+            will-change: opacity, transform;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding-top: 5rem;
+            }
+            .slider-item {
+                width: 280px;
+                height: 350px;
+            }
+            .slider-nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            .slider-nav-btn.left { left: 0.5rem; }
+            .slider-nav-btn.right { right: 0.5rem; }
+            .modal-content {
+                max-width: 95vw;
+                max-height: 95vh;
+            }
+            .slider-item[data-type="video"] .slider-item-overlay::before {
+                font-size: 3rem;
+            }
+        }
+
+        /* Social Icons */
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        /* New Tab Styles (kept) */
+        .tab-btn { transition: all 0.3s ease; position: relative; }
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { width: 100%; }
+        .tab-content { transition: opacity 0.3s ease; }
+
+        .gallery-item { transition: transform 0.3s ease; }
+        .gallery-item:hover img { transform: scale(1.02); }
+
+        /* Gallery Lightbox */
+        #gallery-modal { transition: opacity 0.3s ease; }
+
+        /* Category cards (3 side-by-side with embedded heading) */
+        .category-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            cursor: pointer;
+        }
+        .category-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        .category-card:hover img {
+            transform: scale(1.05);
+        }
+        .category-card .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.0) 60%);
+        }
+        .category-card .title {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.25rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* Full-screen category overlay with grid */
+        #category-overlay {
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        /* ADVANCED hover title overlays on grid photos (all three sections)
+           - Larger, clearer, glassy pill background
+           - Adaptive color based on image brightness (set via JS: .is-dark / .is-bright)
+        */
+        .category-grid .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        /* Gradient base overlay */
+        .category-grid .gallery-item::before {
+            content: "";
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            height: 65%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            opacity: 0;
+            transition: opacity 160ms ease;
+            pointer-events: none;
+        }
+        /* Text pill */
+        .category-grid .gallery-item::after {
+            content: attr(data-title);
+            position: absolute;
+            left: 14px; bottom: 14px;
+            max-width: calc(100% - 28px);
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            font-size: 1.1rem; /* increased size */
+            line-height: 1.2;
+            opacity: 0;
+            transform: translateY(6px) scale(0.98);
+            transition: opacity 160ms ease, transform 160ms ease;
+            pointer-events: none;
+            backdrop-filter: blur(8px) saturate(1.2);
+            box-shadow:
+                0 10px 25px rgba(0,0,0,0.35),
+                0 2px 6px rgba(0,0,0,0.2);
+        }
+        /* Hover/focus reveal */
+        .category-grid .gallery-item:hover::before,
+        .category-grid .gallery-item:focus-visible::before {
+            opacity: 1;
+        }
+        .category-grid .gallery-item:hover::after,
+        .category-grid .gallery-item:focus-visible::after {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Adaptive themes based on image luminance (set via JS) */
+        /* Dark image -> use light text on dark glass */
+        .category-grid .gallery-item.is-dark::before {
+            background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));
+        }
+        .category-grid .gallery-item.is-dark::after {
+            color: #ffffff;
+            background: rgba(17,17,17,0.45);
+            outline: 1px solid rgba(255,255,255,0.15);
+            text-shadow:
+                0 2px 24px rgba(0,0,0,0.65),
+                0 0 1px rgba(255,255,255,0.2);
+        }
+
+        /* Bright image -> use dark text on light glass */
+        .category-grid .gallery-item.is-bright::before {
+            background: linear-gradient(to top, rgba(255,255,255,0.9), rgba(255,255,255,0));
+        }
+        .category-grid .gallery-item.is-bright::after {
+            color: #0f172a; /* slate-900 */
+            background: rgba(255,255,255,0.82);
+            outline: 1px solid rgba(0,0,0,0.08);
+            text-shadow:
+                0 1px 0 rgba(255,255,255,0.7),
+                0 2px 18px rgba(0,0,0,0.15);
+        }
+
+        /* Slight zoom on image for subtle depth when hovering */
+        .category-grid .gallery-item:hover img {
+            transform: scale(1.03);
+            transition: transform 180ms ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm fixed w-full z-50 top-0">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="flex items-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                        <div class="hero-banner-image">
+                        <img src="Images\Logo\logo.jpg" alt="Institute Logo">
+                    </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">Sri Sathya Sai</h1>
+                        <p class="text-xs text-orange-500 font-medium">Skill Development Centre, Telangana</p>
+                    </div>
+                </a>
+                
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="index.html" class="nav-link text-gray-600">Home</a></li>
+                        <li><a href="about.html" class="nav-link text-gray-600">About Us</a></li>
+                        <li><a href="programs.html" class="nav-link text-gray-600">Programs</a></li>
+                        <li><a href="gallery.html" class="nav-link text-orange-500 font-medium active">Gallery</a></li>
+                        <li><a href="join.html" class="nav-link text-gray-600">Join Us</a></li>
+                        <li><a href="contact.html" class="nav-link text-gray-600">Contact</a></li>
+                        <li><a href="register.html" class="ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                    </ul>
+                </nav>
+                
+                <button class="md:hidden text-gray-600 focus:outline-none" id="mobileMenuBtn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="md:hidden hidden py-4" id="mobileMenu">
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Home</a></li>
+                    <li><a href="about.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">About Us</a></li>
+                    <li><a href="programs.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Programs</a></li>
+                    <li><a href="gallery.html" class="block px-4 py-2 text-orange-500 font-medium hover:bg-orange-50 rounded">Gallery</a></li>
+                    <li><a href="join.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Join Us</a></li>
+                    <li><a href="contact.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Contact</a></li>
+                    <li><a href="register.html" class="block mt-4 px-4 py-2 bg-orange-500 text-white text-center rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <section class="hero-section relative bg-gradient-to-r from-orange-50 to-amber-50">
+            <!-- Animated background circles -->
+            <div class="hero-bg-circle top-20 left-20 w-64 h-64 bg-orange-200"></div>
+            <div class="hero-bg-circle bottom-20 right-20 w-64 h-64 bg-amber-200"></div>
+            
+            <div class="container mx-auto px-4 relative z-10 text-center hero-content">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-">Our Evolution</h1>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+                    "Explore the transformative power of skill development through our visual stories. Each image tells a tale of learning, growth, and empowerment."
+                </p>
+            </div>
+        </section>
+
+        <!-- Category Cards Section (Three side-by-side images with embedded titles) -->
+        <section class="py-12 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Training Sessions Card -->
+                    <div class="category-card group" data-category="training" data-title="Training Sessions">
+                        <img src="Images/Gallery/Training sessions/Computer Lab/Computer Lab.jpg" alt="Training Sessions">
+                        <div class="overlay"></div>
+                        <div class="title">Training Sessions</div>
+                    </div>
+
+                    <!-- Events & Ceremonies Card -->
+                    <div class="category-card group" data-category="events" data-title="Events & Ceremonies">
+                        <img src="Images/Gallery/Events & Ceremonies/Planting/Planting.jpg" alt="Events & Ceremonies">
+                        <div class="overlay"></div>
+                        <div class="title">Events & Ceremonies</div>
+                    </div>
+
+                    <!-- Weekend Trips Card -->
+                    <div class="category-card group" data-category="trips" data-title="Weekend Trips">
+                        <img src="Images/Gallery/Weekend Trips/Chennakeshava Temple/Chennakeshava Temple.jpg" alt="Weekend Trips">
+                        <div class="overlay"></div>
+                        <div class="title">Weekend Trips</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Category Grid Overlay -->
+    <div id="category-overlay" class="fixed inset-0 bg-white z-50 hidden overflow-y-auto">
+        <!-- Sticky header -->
+        <div class="sticky top-0 bg-white border-b border-gray-200 z-10">
+            <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <button id="overlay-back" class="text-gray-700 hover:text-orange-600">
+                        <i class="fa-solid fa-arrow-left text-xl"></i>
+                    </button>
+                    <h3 id="overlay-title" class="text-lg font-semibold text-gray-800"></h3>
+                </div>
+                <button id="overlay-close" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Training Grid -->
+        <div id="grid-training" class="category-grid container mx-auto px-4 py-6 hidden">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Training sessions/Computer Lab/Computer Lab.1.jpg" data-title="Computer Lab" data-story="Python with AI: core Python, NumPy/pandas, and visualization. Build mini ML apps with scikit-learn (classification/prediction) and basic model evaluation.">
+                    <img src="Images/Gallery/Training sessions/Computer Lab/Computer Lab.jpg" alt="Computer Lab" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Training sessions/Virtual Meet with HR/HR Meet.1.jpg" data-title="Virtual Meet with HR" data-story="Live session with HR professionals on careers, résumés, and interviews. Students asked questions and received practical tips.">
+                    <img src="Images/Gallery/Training sessions/Virtual Meet with HR/HR Meet.jpg" alt="Virtual Meet with HR" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Training sessions/Intractive Session With Kiran/Kiran.1.jpg" data-title="Intractive Session" data-story="Engaging exchange where students share ideas and ask questions. Activities build confidence, teamwork, and clarity.">
+                    <img src="Images/Gallery/Training sessions/Intractive Session With Kiran/Kiran.jpg" alt="Interactive Session" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Training sessions/Yoga/Yoga.1.jpg" data-title="Yoga" data-story="Morning yoga to improve flexibility, focus, and calm. Breathing techniques and simple postures for daily practice.">
+                    <img src="Images/Gallery/Training sessions/Yoga/Yoga.jpg" alt="Yoga" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Training sessions/Tailoring/Tailoring.1.jpg" data-title="Tailoring" data-story="Hands-on stitching from measurements to finishing. Learners create basic garments and gain confidence for self-employment.">
+                    <img src="Images/Gallery/Training sessions/Tailoring/Tailoring.jpg" alt="Tailoring" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Training sessions/Group Discussion/Group Discussions.1.jpg" data-title="Enhancing Soft Skills" data-story="Practice communication, public speaking, and interviews. Soft skills that complement technical learning for growth.">
+                    <img src="Images/Gallery/Training sessions/Group Discussion/Group Discussions.jpg" alt="Group Discussion" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Training sessions/Debate/Debate.1.jpg" data-title="Debate" data-story="Structured debates to sharpen thinking and clarity. Students research, listen, and present with confidence.">
+                    <img src="Images/Gallery/Training sessions/Debate/Debate.jpg" alt="Debate" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Training sessions/Health Awareness/Health Awareness.1.jpg" data-title="Health Awareness" data-story="Expert talk on physical, mental, and emotional well-being. Simple tips, Q&A, and routines for daily health.">
+                    <img src="Images/Gallery/Training sessions/Health Awareness/Health Awareness.jpg" alt="Health Awareness" class="w-full h-48 object-cover rounded-lg">
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Grid -->
+        <div id="grid-events" class="category-grid container mx-auto px-4 py-6 hidden">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Events & Ceremonies/Planting/Planting.1.jpg" data-title="Planting" data-story="Planting saplings to promote a greener campus. Students learn basic care and the value of nurturing nature.">
+                    <img src="Images/Gallery/Events & Ceremonies/Planting/Planting.jpg" alt="Planting" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Events & Ceremonies/Bajana With Students/Students Bajana.1.jpg" data-title="Bajana" data-story="Devotional songs by students celebrating Swami’s teachings. Music that builds unity, devotion, and inner peace.">
+                    <img src="Images/Gallery/Events & Ceremonies/Bajana With Students/Students Bajana.jpg" alt="Sai Bhajan" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Events & Ceremonies/Ribbon Cutting/cermony.1.jpg" data-title="Cermony" data-story="Inaugural ribbon-cutting with guests and volunteers. A fresh start to serve and empower through skill development.">
+                    <img src="Images/Gallery/Events & Ceremonies/Ribbon Cutting/cermony.jpg" alt="Opening Ceremony" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Events & Ceremonies/Photo With State Youth Coordinator/Group Photo.jpg" data-title="State Youth Coordinator" data-story="State Youth Coordinator inspires and guides youth initiatives. Encourages leadership, service, and active participation.">
+                    <img src="Images/Gallery/Events & Ceremonies/Photo With State Youth Coordinator/Group Photo.jpg" alt="State Youth Coordinator" class="w-full h-48 object-cover rounded-lg">
+                </div>
+            </div>
+        </div>
+
+        <!-- Trips Grid -->
+        <div id="grid-trips" class="category-grid container mx-auto px-4 py-6 hidden">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Weekend Trips/Chennakeshava Temple/Chennakeshava Temple1.jpg" data-title="Chennakeshava Temple" data-story="Sri Lakshmi Chennakesava Swamy Temple near Jadcherla. A serene heritage site with beautiful stone architecture.">
+                    <img src="Images/Gallery/Weekend Trips/Chennakeshava Temple/Chennakeshava Temple.jpg" alt="Chennakeshava Temple" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Weekend Trips/Sri Meenambaram Shiva Devalayam/Sri Meenambaram Shiva Devalayam.jpg" data-title="Sri Meenambaram Shiva Devalayam" data-story="Ancient Shiva temple by the Dundubhi river. A peaceful place for prayer and heritage appreciation.">
+                    <img src="Images/Gallery/Weekend Trips/Sri Meenambaram Shiva Devalayam/Sri Meenambaram Shiva Devalayam.jpg" alt="Sri Meenambaram Shiva Devalayam" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Weekend Trips/Manyamkonda Sri Lakshmi Venkateshwara Swamy Temple/Manyakonda.jpg" data-title="Manyamkonda Sri Lakshmi Venkateshwara Swamy Temple" data-story="Hilltop temple with panoramic views and quiet devotion. A short trek with steps and shaded paths.">
+                    <img src="Images/Gallery/Weekend Trips/Manyamkonda Sri Lakshmi Venkateshwara Swamy Temple/Manyakonda.jpg" alt="Manyamkonda Temple" class="w-full h-48 object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-type="image" data-full-image="Images/Gallery/Weekend Trips/Manyamkonda Sri Lakshmi Venkateshwara Swamy Temple/Manyamkonda Rock Vally.jpg" data-title="Manyamkonda Hills" data-story="Rocky hillscape with caves and green valleys. Popular short hikes with scenic viewpoints.">
+                    <img src="Images/Gallery/Weekend Trips/Manyamkonda Sri Lakshmi Venkateshwara Swamy Temple/Manyamkonda Rock Vally.jpg" alt="Manyamkonda Hills" class="w-full h-48 object-cover rounded-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Container -->
+    <div id="chat-container" class="fixed bottom-5 right-5 z-50">
+        <!-- The circular icon that toggles the chat window -->
+        <button id="chat-icon" class="bg-orange-500 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center focus:outline-none hover:bg-orange-600 transition-transform duration-300 ease-in-out">
+            <i class="fas fa-comments text-2xl"></i>
+        </button>
+
+        <!-- The chat window itself -->
+        <div id="chat-window" class="hidden absolute bottom-24 right-0 w-[26rem] bg-white rounded-2xl shadow-2xl flex flex-col transition-all duration-300 ease-in-out" style="height: 36rem;">
+            
+            <!-- Header Section -->
+            <div class="bg-orange-500 text-white p-4 rounded-t-2xl flex justify-between items-center">
+                <h3 class="font-bold text-lg">Chat Bot</h3>
+                <button id="close-chat" class="text-2xl font-bold focus:outline-none hover:opacity-75">&times;</button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto">
+                <!-- Example initial message -->
+                <div class="mb-4 flex">
+                    <div class="bg-gray-100 text-gray-800 rounded-lg py-2 px-4 inline-block max-w-xs">
+                        <p>Sairam! How can I help you today? Or ask me in Telugu!</p>
+                    </div>
+                </div>
+                 <!-- Example user message -->
+                <div class="mb-4 flex justify-end">
+                    <div class="bg-orange-500 text-white rounded-lg py-2 px-4 inline-block max-w-xs">
+                        <p>Hello!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center border border-gray-300 rounded-full p-1 focus-within:ring-2 focus-within:ring-orange-400">
+                    <input type="text" id="chat-input" placeholder="Type your message..." class="w-full px-4 py-2 border-none focus:outline-none focus:ring-0 bg-transparent text-gray-800">
+                    <button id="send-btn" class="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 focus:outline-none">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4">
+    <!-- Top Footer Grid -->
+    <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-4 mb-8">
+      <!-- Logo and Description -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 flex items-center">
+          <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          SSSDC–JCL
+        </h3>
+        <p class="text-gray-400 text-sm mb-4">
+          Empowering communities through skill development inspired by Sri Sathya Sai Baba's teachings of love, service, and human values.
+        </p>
+        <div class="flex space-x-3">
+          <a href="https://www.facebook.com/profile.php?id=61579270434231" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://x.com/Srisathyas48205" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/srisathyasai_skill_dev/" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.youtube.com/@srisathyaasai_skill.dev_centre" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+
+
+     <!-- Quick Links -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="index.html" class="text-gray-400 hover:text-orange-500">Home</a></li>
+          <li><a href="about.html" class="text-gray-400 hover:text-orange-500">About Us</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Programs</a></li>
+          <li><a href="gallery.html" class="text-gray-400 hover:text-orange-500">Gallery</a></li>
+          <li><a href="join.html" class="text-gray-400 hover:text-orange-500">Join Us</a></li>
+          <li><a href="contact.html" class="text-gray-400 hover:text-orange-500">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Program List -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Our Programs</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Tailoring & Maggam Work</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Beautician Training</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Electrical & Wiring</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Computer Basics</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Soft Skills</a></li>
+        </ul>
+      </div>
+      
+      <!-- Contact Info -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Contact Us</h4>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li class="flex items-start">
+            <i class="fas fa-map-marker-alt mr-2 mt-1 text-orange-500"></i>
+            <span>Jadcherla, Mahabubnagar, Telangana - 509301, India</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-phone-alt mr-2 mt-1 text-orange-500"></i>
+            <span>+91 8555 287239</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-envelope mr-2 mt-1 text-orange-500"></i>
+            <span>srisathyasaiskilldevelopment@gmail.com</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 pt-4 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-400">
+      <p class="mb-2 sm:mb-0">© 2025 Sri Sathya Sai Skill Development Centre. All rights reserved.</p>
+      <div class="flex space-x-4">
+        <a href="#" class="hover:text-orange-500">Privacy Policy</a>
+        <a href="#" class="hover:text-orange-500">Terms of Service</a>
+        <a href="#" class="hover:text-orange-500">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+    <!-- Gallery Lightbox Modal -->
+    <div id="gallery-modal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden">
+        <div class="relative w-full h-full flex items-center justify-center">
+            <button id="close-modal" class="absolute top-4 right-4 text-white text-3xl z-50">&times;</button>
+            <button id="prev-btn" class="absolute left-4 text-white text-3xl z-50 bg-black bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center">&#10094;</button>
+            <button id="next-btn" class="absolute right-4 text-white text-3xl z-50 bg-black bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center">&#10095;</button>
+            
+            <div class="w-full max-w-4xl px-4">
+                <div class="relative">
+                    <img id="modal-image" src="" alt="" class="w-full max-h-[80vh] object-contain mx-auto">
+                    <div class="mt-4 text-white text-center">
+                        <h3 id="modal-title" class="text-xl font-bold"></h3>
+                        <p id="modal-story" class="mt-2"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Existing Modal -->
+    <div id="image-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close-btn"><i class="fas fa-times"></i></span>
+            <div class="modal-media-wrapper"></div>
+            <div class="modal-text">
+                <h3 id="modal-title"></h3>
+                <p id="modal-story"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GSAP Register Plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Hero Section Animation
+        gsap.to('.hero-bg-circle', {
+            opacity: 0.7,
+            scale: 1,
+            duration: 1.5,
+            ease: "power2.out",
+            stagger: 0.2
+        });
+
+        gsap.to('.hero-content', {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power2.out",
+            delay: 0.3
+        });
+
+        // Gallery Section Animations (kept)
+        const gallerySections = ['.tab-content'];
+        gallerySections.forEach((section, index) => {
+            gsap.to(section, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                delay: index * 0.1
+            });
+        });
+
+        // Footer Animation
+        gsap.to('footer', {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: 'footer',
+                start: "top 90%",
+                toggleActions: "play none none none"
+            }
+        });
+
+        // Category overlay logic
+        const overlay = document.getElementById('category-overlay');
+        const overlayBack = document.getElementById('overlay-back');
+        const overlayClose = document.getElementById('overlay-close');
+        const overlayTitle = document.getElementById('overlay-title');
+
+        const categoryCards = document.querySelectorAll('.category-card');
+
+        function showOverlayFor(category, title) {
+            // Hide all grids
+            document.querySelectorAll('.category-grid').forEach(g => g.classList.add('hidden'));
+            // Show selected
+            const gridId = category === 'training' ? 'grid-training' : category === 'events' ? 'grid-events' : 'grid-trips';
+            const gridEl = document.getElementById(gridId);
+            if (gridEl) {
+                gridEl.classList.remove('hidden');
+                overlayTitle.textContent = title || '';
+                analyzeGridContrast(gridEl);
+            }
+
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideOverlay() {
+            overlay.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        categoryCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const category = card.getAttribute('data-category');
+                const title = card.getAttribute('data-title') || '';
+                showOverlayFor(category, title);
+            });
+        });
+
+        overlayBack.addEventListener('click', hideOverlay);
+        overlayClose.addEventListener('click', hideOverlay);
+
+        // Lightbox functionality for grid items
+        let currentItems = [];
+        let currentIndex = 0;
+
+        function openModal(item) {
+            const modal = document.getElementById('gallery-modal');
+            const modalImg = document.getElementById('modal-image');
+            const modalTitle = document.getElementById('modal-title');
+            const modalStory = document.getElementById('modal-story');
+
+            modalImg.src = item.getAttribute('data-full-image');
+            modalTitle.textContent = item.getAttribute('data-title') || '';
+            modalStory.textContent = item.getAttribute('data-story') || '';
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('gallery-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function navigateModal(direction) {
+            if (!currentItems.length) return;
+            if (direction === 'prev') {
+                currentIndex = (currentIndex - 1 + currentItems.length) % currentItems.length;
+            } else {
+                currentIndex = (currentIndex + 1) % currentItems.length;
+            }
+            const item = currentItems[currentIndex];
+            openModal(item);
+        }
+
+        // Delegate clicks within overlay to open modal
+        overlay.addEventListener('click', (e) => {
+            const item = e.target.closest('.gallery-item');
+            if (!item) return;
+            const visibleGrid = overlay.querySelector('.category-grid:not(.hidden)');
+            if (!visibleGrid) return;
+            currentItems = Array.from(visibleGrid.querySelectorAll('.gallery-item'));
+            currentIndex = currentItems.indexOf(item);
+            openModal(item);
+        });
+
+        // Event listeners for modal controls
+        document.getElementById('close-modal').addEventListener('click', closeModal);
+        document.getElementById('prev-btn').addEventListener('click', () => navigateModal('prev'));
+        document.getElementById('next-btn').addEventListener('click', () => navigateModal('next'));
+
+        // Close modal when clicking outside the image
+        document.getElementById('gallery-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('gallery-modal')) {
+                closeModal();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const galleryModalVisible = !document.getElementById('gallery-modal').classList.contains('hidden');
+            const categoryOverlayVisible = !overlay.classList.contains('hidden');
+
+            if (galleryModalVisible) {
+                if (e.key === 'Escape') closeModal();
+                else if (e.key === 'ArrowLeft') navigateModal('prev');
+                else if (e.key === 'ArrowRight') navigateModal('next');
+            } else if (categoryOverlayVisible) {
+                if (e.key === 'Escape') hideOverlay();
+            }
+        });
+
+        // Existing Modal Functionality (kept)
+        const modal = document.getElementById('image-modal');
+        const modalMediaWrapper = modal.querySelector('.modal-media-wrapper');
+        const existingModalTitle = document.getElementById('modal-title');
+        const existingModalStory = document.getElementById('modal-story');
+        const closeBtn = document.querySelector('.modal-close-btn');
+
+        document.querySelectorAll('.slider-item').forEach(item => {
+            item.addEventListener('click', () => {
+                modalMediaWrapper.innerHTML = '';
+
+                const type = item.dataset.type;
+                const title = item.dataset.title;
+                const story = item.dataset.story;
+
+                if (type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = item.dataset.fullImage;
+                    img.alt = title;
+                    img.classList.add('modal-image');
+                    modalMediaWrapper.appendChild(img);
+                } else if (type === 'video') {
+                    const video = document.createElement('video');
+                    video.src = item.dataset.videoSrc;
+                    video.classList.add('modal-video');
+                    video.controls = true;
+                    video.autoplay = true;
+                    video.loop = false;
+                    video.muted = false;
+                    video.playsInline = true;
+                    modalMediaWrapper.appendChild(video);
+                }
+
+                existingModalTitle.textContent = title;
+                existingModalStory.textContent = story;
+
+                modal.classList.add('active');
+                gsap.fromTo(modal,
+                    { opacity: 0 },
+                    { opacity: 1, duration: 0.3, ease: 'power2.out' }
+                );
+                gsap.fromTo(modal.querySelector('.modal-content'),
+                    { scale: 0.7, y: 50 },
+                    { scale: 1, y: 0, duration: 0.4, ease: 'power2.out' }
+                );
+            });
+        });
+
+        closeBtn.addEventListener('click', () => {
+            const currentModalVideo = modal.querySelector('.modal-video');
+            if (currentModalVideo) {
+                currentModalVideo.pause();
+            }
+
+            gsap.to(modal.querySelector('.modal-content'), {
+                scale: 0.7,
+                y: 50,
+                duration: 0.3,
+                ease: 'power2.in',
+                onComplete: () => {
+                    gsap.to(modal, {
+                        opacity: 0,
+                        duration: 0.2,
+                        onComplete: () => modal.classList.remove('active')
+                    });
+                }
+            });
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                const currentModalVideo = modal.querySelector('.modal-video');
+                if (currentModalVideo) {
+                    currentModalVideo.pause();
+                }
+
+                gsap.to(modal.querySelector('.modal-content'), {
+                    scale: 0.7,
+                    y: 50,
+                    duration: 0.3,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        gsap.to(modal, {
+                            opacity: 0,
+                            duration: 0.2,
+                            onComplete: () => modal.classList.remove('active')
+                        });
+                    }
+                });
+            }
+        });
+
+        // Video visibility handling (kept)
+        const handleVideoVisibility = (entries) => {
+            entries.forEach(entry => {
+                const video = entry.target;
+                if (video.tagName === 'VIDEO') {
+                    if (entry.isIntersecting) {
+                        const playPromise = video.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(() => {
+                                video.muted = true;
+                                video.play();
+                            });
+                        }
+                    } else {
+                        video.pause();
+                    }
+                }
+            });
+        };
+
+        const videoObserver = new IntersectionObserver(handleVideoVisibility, {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.7
+        });
+
+        document.querySelectorAll('.slider-item video').forEach(video => {
+            videoObserver.observe(video);
+        });
+
+        /* NEW: Adaptive contrast for hover titles based on image brightness */
+        function analyzeGridContrast(gridEl) {
+            const items = gridEl.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                const img = item.querySelector('img');
+                if (!img) return;
+
+                const applyClass = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                        const w = 12, h = 12; // small sample for speed
+                        canvas.width = w;
+                        canvas.height = h;
+                        ctx.drawImage(img, 0, 0, w, h);
+                        const data = ctx.getImageData(0, 0, w, h).data;
+                        let r = 0, g = 0, b = 0, count = 0;
+                        for (let i = 0; i < data.length; i += 4) {
+                            r += data[i];
+                            g += data[i + 1];
+                            b += data[i + 2];
+                            count++;
+                        }
+                        r = r / count; g = g / count; b = b / count;
+                        // Perceived luminance
+                        const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                        // Threshold (higher means brighter)
+                        const isBright = luminance > 180; // tuned threshold
+                        item.classList.remove('is-dark', 'is-bright');
+                        item.classList.add(isBright ? 'is-bright' : 'is-dark');
+                    } catch (err) {
+                        // Fallback if canvas tainted or any error
+                        item.classList.add('is-dark');
+                    }
+                };
+
+                if (img.complete && img.naturalWidth > 0) {
+                    applyClass();
+                } else {
+                    img.addEventListener('load', applyClass, { once: true });
+                    img.addEventListener('error', () => item.classList.add('is-dark'), { once: true });
+                }
+            });
+        }
+
+        // Run contrast analysis once DOM is ready (for all grids, even if hidden)
+        document.addEventListener('DOMContentLoaded', () => {
+            ['grid-training', 'grid-events', 'grid-trips'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) analyzeGridContrast(el);
+            });
+        });
+    </script>
+</body>
+</html>

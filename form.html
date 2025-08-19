@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form - Sri Sathya Sai Skill Development Centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F97316;
+            --primary-dark: #EA580C;
+            --secondary: #1E293B;
+            --light: #FFF7ED;
+            --accent: #F59E0B;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--secondary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.5;
+        }
+        
+        .hero-section {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            position: relative;
+        }
+        
+        .glow-on-hover {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0);
+        }
+        
+        .glow-on-hover:hover {
+            box-shadow: 0 0 25px rgba(249, 115, 22, 0.5);
+        }
+        
+        .form-container {
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Orange Theme for Hero Section Elements */
+        .hero-heading {
+            color: var(--light);
+            -webkit-text-stroke: 1.2px var(--primary);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-quote {
+            color: #FFFFFF;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+            font-weight: 600;
+        }
+
+        .hero-button {
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+        }
+
+        .hero-button:hover {
+            box-shadow: 0 0 30px rgba(249, 115, 22, 0.7);
+            background-color: var(--primary-dark);
+        }
+
+        .sai-bg-pattern {
+            background-image: url('https://www.sssihl.edu.in/wp-content/themes/sssihl/images/sai-opacity.png');
+            background-repeat: repeat;
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<header class="bg-white shadow-sm fixed w-full z-50 top-0">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="flex items-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                       <div class="hero-banner-image">
+                        <img src="Images\Logo\logo.jpg" alt="Institute Logo">
+                    </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">Sri Sathya Sai</h1>
+                        <p class="text-xs text-orange-500 font-medium">Skill Development Centre, Jadcherla</p>
+                    </div>
+                </a>
+                
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="index.html" class="nav-link text-gray-600">Home</a></li>
+                        <li><a href="about.html" class="nav-link text-gray-600">About Us</a></li>
+                        <li><a href="programs.html" class="nav-link text-gray-600">Programs</a></li>
+                        <li><a href="gallery.html" class="nav-link text-gray-600">Gallery</a></li>
+                        <li><a href="join.html" class="nav-link text-gray-600">Join Us</a></li>
+                        <li><a href="contact.html" class="nav-link text-gray-600">Contact</a></li>
+                        <li><a href="register.html" class="ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                    </ul>
+                </nav>
+                
+                <button class="md:hidden text-gray-600 focus:outline-none" id="mobileMenuBtn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="md:hidden hidden py-4" id="mobileMenu">
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Home</a></li>
+                    <li><a href="about.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">About Us</a></li>
+                    <li><a href="programs.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Programs</a></li>
+                    <li><a href="gallery.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Gallery</a></li>
+                    <li><a href="join.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Join Us</a></li>
+                    <li><a href="contact.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Contact</a></li>
+                    <li><a href="register.html" class="block mt-4 px-4 py-2 bg-orange-500 text-white text-center rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-20">
+        <!-- Hero Section -->
+        <section class="hero-section relative py-20 text-white flex items-center justify-center">
+            <div id="particles-js"></div>
+            <div class="container mx-auto px-4 relative z-10 text-center">
+                <h1 class="hero-heading text-4xl md:text-6xl font-extrabold mb-6">Course Registration</h1>
+                <p class="hero-quote text-xl md:text-2xl max-w-2xl mx-auto mb-8">"Education is for life, not merely for living." — Sri Sathya Sai Baba</p>
+            </div>
+        </section>
+
+        <!-- Google Form Section -->
+        <section class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <div class="form-container rounded-xl shadow-lg overflow-hidden">
+                        <div class="md:flex">
+                            <!-- Left Side with Sai Baba Image and Quote -->
+                            <div class="md:w-1/2 bg-gradient-to-br from-orange-400 to-amber-500 p-12 text-white flex flex-col justify-center relative">
+                                <div class="absolute inset-0 sai-bg-pattern"></div>
+                                <div class="relative z-10">
+                                    <div class="flex justify-center mb-6">
+                                        <img src="Images\Join US\Sai.jpg" 
+                                             alt="Sri Sathya Sai Baba" 
+                                             class="rounded-lg shadow-lg w-full max-w-xs border-4 border-white">
+                                    </div>
+                                    
+                                    <h2 class="text-3xl font-bold mb-6">Transform Lives Through Education</h2>
+                                    <p class="text-lg mb-6">"The end of education is character." Register for our skill development courses and empower yourself to serve society.</p>
+                                    
+                                    <div class="space-y-4">
+                                        <div class="flex items-start">
+                                            <i class="fas fa-check-circle mt-1 mr-3 text-amber-200"></i>
+                                            <span>Practical skill training</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <i class="fas fa-check-circle mt-1 mr-3 text-amber-200"></i>
+                                            <span>Certified courses</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <i class="fas fa-check-circle mt-1 mr-3 text-amber-200"></i>
+                                            <span>Placement assistance</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Side with Google Form -->
+                            <div class="md:w-1/2 p-0">
+                                <iframe 
+                                    src="https://docs.google.com/forms/d/e/1FAIpQLSdRNta_ecgn1f55LTF0M5w7q29qwt-XmvIhPH-kIw6UiNEKYA/viewform?embedded=true"  
+                                    width="100%" 
+                                    height="900" 
+                                    frameborder="0" 
+                                    marginheight="0" 
+                                    marginwidth="0"
+                                    class="rounded-r-lg"
+                                    style="min-height: 700px;">
+                                    Loading…
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA Section -->
+        <section class="py-16 bg-gradient-to-r from-orange-400 to-amber-500 text-white">
+            <div class="container mx-auto px-4 text-center">
+                <div class="max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-6">Have Questions About Our Courses?</h2>
+                    <p class="text-xl mb-8">Our team is ready to guide you in choosing the right program for your needs</p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="contact.html" class="px-8 py-4 bg-white text-orange-500 rounded-full hover:bg-gray-100 transition font-medium text-lg glow-on-hover">
+                            <i class="fas fa-phone-alt mr-2"></i> Contact Us
+                        </a>
+                        <a href="programs.html" class="px-8 py-4 border-2 border-white text-white rounded-full hover:bg-white hover:text-orange-500 transition font-medium text-lg">
+                            <i class="fas fa-book mr-2"></i> View All Programs
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <div>
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                        </div>
+                        SSSDC–JCL
+                    </h3>
+                    <p class="text-gray-400 mb-6">Empowering communities through skill development inspired by Sri Sathya Sai Baba's teachings of love, service, and human values.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:bg-orange-500 hover:text-white p-2 rounded-full transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:bg-orange-500 hover:text-white p-2 rounded-full transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:bg-orange-500 hover:text-white p-2 rounded-full transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:bg-orange-500 hover:text-white p-2 rounded-full transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Quick Links</h3>
+                    <ul class="space-y-3">
+                        <li><a href="index.html" class="text-gray-400 hover:text-orange-500 transition">Home</a></li>
+                        <li><a href="about.html" class="text-gray-400 hover:text-orange-500 transition">About Us</a></li>
+                        <li><a href="programs.html" class="text-gray-400 hover:text-orange-500 transition">Programs</a></li>
+                        <li><a href="gallery.html" class="text-gray-400 hover:text-orange-500 transition">Gallery</a></li>
+                        <li><a href="join.html" class="text-gray-400 hover:text-orange-500 transition">Join Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Our Programs</h3>
+                    <ul class="space-y-3">
+                        <li><a href="programs.html" class="text-gray-400 hover:text-orange-500 transition">Tailoring & Maggam Work</a></li>
+                        <li><a href="programs.html" class="text-gray-400 hover:text-orange-500 transition">Beautician Training</a></li>
+                        <li><a href="programs.html" class="text-gray-400 hover:text-orange-500 transition">Electrical & Wiring</a></li>
+                        <li><a href="programs.html" class="text-gray-400 hover:text-orange-500 transition">Computer Basics</a></li>
+                        <li><a href="programs.html" class="text-gray-400 hover:text-orange-500 transition">Soft Skills</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Contact Us</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-orange-500"></i>
+                            <span>Jadcherla, Mahabubnagar, Telangana - 509301, India</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt mt-1 mr-3 text-orange-500"></i>
+                            <span>+91 8555 287239</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-3 text-orange-500"></i>
+                            <span>srisathyasaiskilldevelopment@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 mb-4 md:mb-0">© 2025 Sri Sathya Sai Skill Development Centre. All rights reserved.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-orange-500 transition">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 hover:text-orange-500 transition">Terms of Service</a>
+                        <a href="#" class="text-gray-400 hover:text-orange-500 transition">Sitemap</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Initialize Particles.js with Orange Theme
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.particlesJS) {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 80, density: { enable: true, value_area: 800 } },
+                        color: { value: ['#F97316', '#F59E0B'] }, // Primary and accent orange colors
+                        shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
+                        opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1, opacity_min: 0.2 } },
+                        size: { value: 4, random: true, anim: { enable: true, speed: 2, size_min: 0.2 } },
+                        line_linked: { enable: true, distance: 150, color: '#F97316', opacity: 0.5, width: 1 },
+                        move: { enable: true, speed: 2, direction: 'none', random: true, straight: false, out_mode: 'out' }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                        modes: { grab: { distance: 140, line_linked: { opacity: 1 } }, push: { particles_nb: 4 } }
+                    },
+                    retina_detect: true
+                });
+            } else {
+                console.warn('Particles.js not loaded');
+            }
+
+            // GSAP Animations
+            if (window.gsap && window.ScrollTrigger) {
+                gsap.registerPlugin(ScrollTrigger);
+
+                // Hero Section animations
+                gsap.from('.hero-heading', {
+                    duration: 1,
+                    y: 50,
+                    opacity: 0,
+                    ease: 'power3.out'
+                });
+                
+                gsap.from('.hero-quote', {
+                    duration: 1,
+                    y: 50,
+                    opacity: 0,
+                    delay: 0.3,
+                    ease: 'power3.out'
+                });
+
+                // Google Form Section animation
+                gsap.from('.form-container', {
+                    duration: 1.2,
+                    opacity: 0,
+                    y: 50,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: '.form-container',
+                        start: 'top 70%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+
+                // Final CTA Section animations
+                gsap.from('.bg-gradient-to-r h2, .bg-gradient-to-r p, .bg-gradient-to-r a', {
+                    duration: 1,
+                    
+                    y: 50,
+                    opacity: 0,
+                    stagger: 0.2,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: '.bg-gradient-to-r',
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

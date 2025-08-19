@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Sathya Sai Skill Development Centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="chatbot.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F97316;
+            --primary-dark: #EA580C;
+            --secondary: #1E293B;
+            --light: #FFF7ED;
+            --accent: #F59E0B;
+
+            /* Dynamic layout variables (updated by JS) */
+            --header-h: 100px;   /* real header height (computed) */
+            --marquee-h: 40px;   /* real marquee height (computed) */
+
+            /* Set this to 0px if you don't want a white separator line */
+            --header-separator: 2px; /* thickness of the white line under header when scrolled */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--secondary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Admission Marquee */
+        .admission-marquee {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: var(--header-h); /* always sits just under the header */
+            width: 100%;
+            z-index: 49;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: marquee 30s linear infinite;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* --- Header specific styles --- */
+        .header-transparent {
+            background-color: transparent;
+            box-shadow: none;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header-scrolled {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: var(--header-separator) solid #ffffff; /* subtle white line */
+        }
+
+        /* Let content define height; we control vertical spacing with padding */
+        #main-header.header-transparent,
+        #main-header.header-scrolled {
+            height: auto;
+        }
+
+        /* Inner padding of the header (shrinks on scroll) */
+        #main-header .header-inner {
+            padding-block: 1.25rem; /* top & bottom */
+            transition: padding 0.25s ease;
+        }
+        #main-header.header-scrolled .header-inner {
+            padding-block: 0.75rem;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* -------- Nav link behavior -------- */
+        .header-transparent .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            transition: color 0.3s;
+        }
+        .header-transparent .nav-link:hover,
+        .header-transparent .nav-link.active {
+            color: var(--primary);
+        }
+        .header-scrolled .nav-link {
+            color: var(--secondary);
+        }
+        .header-scrolled .nav-link:hover,
+        .header-scrolled .nav-link.active {
+            color: var(--primary);
+        }
+
+        /* -------- Mobile menu (hamburger) button behavior -------- */
+        .header-transparent #mobileMenuBtn svg {
+            stroke: white;
+            transition: stroke 0.3s ease;
+        }
+        .header-transparent #mobileMenuBtn:hover svg {
+            stroke: var(--primary);
+        }
+        .header-scrolled #mobileMenuBtn svg {
+            stroke: var(--secondary);
+        }
+        .header-scrolled #mobileMenuBtn:hover svg {
+            stroke: var(--primary);
+        }
+
+        /* Keeps "Sri Sathya Sai" in orange always */
+        #main-logo-h1 {
+            color: var(--primary);
+        }
+
+        /* Tagline color changes depending on header state */
+        .header-transparent #main-logo-p {
+            color: white;
+            transition: color 0.3s ease;
+        }
+        .header-scrolled #main-logo-p {
+            color: black;
+        }
+
+        /* Mobile menu text color */
+        #mobileMenu li a {
+            color: var(--secondary);
+        }
+        #mobileMenu li a:hover {
+             background-color: var(--light);
+        }
+        #mobileMenu li .nav-link.active {
+            color: var(--primary);
+        }
+
+        /* --- Video Background & Overlay --- */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        /* --- Hero Section Content Alignment & Images --- */
+        .hero-content {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            /* Always account for header + marquee dynamically */
+            padding-top: calc(var(--header-h) + var(--marquee-h) + 2rem);
+            padding-bottom: 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .center-main-heading {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            margin-top: 2rem;
+            margin-bottom: auto;
+            animation: floatText 3s ease-in-out infinite alternate;
+            transform: translateY(0);
+        }
+        @keyframes floatText {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.01); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        .hero-bottom-banner-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1rem;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .hero-banner-image {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+        .hero-banner-image:first-child { margin-left: -8rem; }
+        .hero-banner-image:last-child { margin-right: -8rem; }
+        .hero-banner-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .small-education-quote {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+            margin-top: auto;
+            margin-bottom: 1rem;
+            max-width: 80%;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out forwards;
+            animation-delay: 1.5s;
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .love-serve-text {
+            font-family: 'Tangerine', cursive;
+            font-size: 4.5rem;
+            font-weight: normal;
+            color: white;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transform: scale(0.95);
+            animation: fadeInZoom 1.5s ease-out forwards;
+            animation-delay: 2.2s;
+            white-space: nowrap;
+            line-height: 1;
+        }
+        @keyframes fadeInZoom {
+            0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .sai-image { filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3)); transition: transform 0.5s ease; }
+        .sai-image:hover { transform: scale(1.03); }
+
+        .value-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(5px);
+        }
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .hero-banner-image { width: 180px; height: 180px; }
+            .love-serve-text { font-size: 3.5rem; }
+            .hero-bottom-banner-container { gap: 1.5rem; }
+            .small-education-quote { font-size: 1.3rem; padding: 0.6rem 1.2rem; }
+            .hero-banner-image:first-child { margin-left: -5rem; }
+            .hero-banner-image:last-child { margin-right: -5rem; }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                padding-top: calc(var(--header-h) + var(--marquee-h) + 2rem);
+                padding-bottom: 4rem;
+            }
+            .love-serve-text { font-size: 2.8rem; white-space: normal; }
+            .small-education-quote { font-size: 1.1rem; padding: 0.5rem 1rem; margin-bottom: 0.75rem; }
+            .center-main-heading { font-size: 2.5rem; margin-top: 1rem; }
+            .hero-bottom-banner-container { flex-direction: column; gap: 1rem; margin-top: 2rem; }
+            .hero-banner-image { width: 150px; height: 150px; }
+        }
+
+        @media (max-width: 480px) {
+            .love-serve-text { font-size: 2rem; }
+            .small-education-quote { font-size: 0.9rem; margin-bottom: 0.5rem; }
+            .hero-banner-image { width: 100px; height: 100px; }
+            .center-main-heading { font-size: 1.8rem; margin-top: 0.5rem; }
+            .hero-content { padding-top: calc(var(--header-h) + var(--marquee-h) + 2rem); }
+        }
+    </style>
+</head>
+<body>
+    <header id="main-header" class="header-transparent fixed w-full z-50 top-0">
+        <div class="container mx-auto px-4 header-inner">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="flex items-center">
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden shadow-md">
+                        <img src="Images\Logo\logo.jpg" alt="Logo" class="w-full h-full object-cover">
+                    </div>
+                    <div class="ml-4">
+                        <h1 id="main-logo-h1" class="text-xl md:text-2xl font-bold">Sri Sathya Sai</h1>
+                        <p id="main-logo-p" class="text-sm font-medium">Skill Development Centre, Telangana</p>
+                    </div>
+                </a>
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="nav-link text-white active">Home</a>
+                    <a href="about.html" class="nav-link text-white">About Us</a>
+                    <a href="programs.html" class="nav-link text-white">Programs</a>
+                    <a href="gallery.html" class="nav-link text-white">Gallery</a>
+                    <a href="join.html" class="nav-link text-gray-600 hover:text-orange-500">Join Us</a>
+                    <a href="contact.html" class="nav-link text-white">Contact</a>
+                    <a href="register.html" class="px-5 py-2.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition font-medium">Register</a>
+                </nav>
+                <button id="mobileMenuBtn" class="md:hidden text-white focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobileMenu" class="md:hidden hidden py-4 bg-white rounded-lg shadow-lg mt-5">
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="block px-4 py-2 text-orange-500 font-medium hover:bg-orange-50 rounded">Home</a></li>
+                    <li><a href="about.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">About Us</a></li>
+                    <li><a href="programs.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Programs</a></li>
+                    <li><a href="gallery.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Gallery</a></li>
+                    <li><a href="join.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Join Us</a></li>
+                    <li><a href="contact.html" class="block px-4 py-2 text-gray-600 hover:bg-orange-50 rounded">Contact</a></li>
+                    <li><a href="register.html" class="block mt-4 px-4 py-2 bg-orange-500 text-white text-center rounded-lg hover:bg-orange-600 transition">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admission Marquee - dynamically positioned under header -->
+    <div class="admission-marquee">
+        <div class="marquee-content">
+            🚀 Admissions Open for "Python with AI" – Exclusive Women's Batch, 2nd Batch in Python 🚀 &nbsp;&nbsp;&nbsp;&nbsp;
+            🚀 Admissions Open for "Python with AI" – Exclusive Women's Batch, 2nd Batch in Python 🚀 &nbsp;&nbsp;&nbsp;&nbsp;
+            🚀 Admissions Open for "Python with AI" – Exclusive Women's Batch, 2nd Batch in Python 🚀
+        </div>
+    </div>
+
+    <main class="flex-grow">
+        <video autoplay muted loop class="video-background">
+            <source src="Home Page Intro\Home Section Intro.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+        </video>
+        <div class="overlay"></div>
+
+        <section class="relative text-white">
+            <div class="hero-content">
+                <h1 class="center-main-heading">Sri Sathya Sai Skill Development Centre</h1>
+                <p class="small-education-quote">"The end of education is character."</p>
+                <div class="hero-bottom-banner-container">
+                    <div class="hero-banner-image">
+                        <img src="Images\Logo\logo.jpg" alt="Institute Logo">
+                    </div>
+                    <div class="love-serve-text">Love All Serve All</div>
+                    <div class="hero-banner-image">
+                        <img src="Images\sai1.jpg" alt="Sathya Sai Baba">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="relative py-16 bg-white bg-opacity-90 backdrop-blur-sm">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Sri Sathya Sai Skill Development Centre</h2>
+                    <div class="w-20 h-1 bg-orange-500 mx-auto mb-6"></div>
+                    <p class="text-gray-600 text-lg">In affiliation with Sri Sathya Sai Seva Organizations, we offer free vocational training to deserving youth, delivered by experienced industry professionals in a modern, hands-on learning setting.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="value-card p-8 text-center">
+                        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-graduation-cap text-orange-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Skill Training</h3>
+                        <p class="text-gray-600">Gain real-world skills through industry-relevant, practical training.</p>
+                    </div>
+                    <div class="value-card p-8 text-center">
+                        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-heart text-orange-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Value Education</h3>
+                        <p class="text-gray-600">Guiding youth to develop strong values and practical skills for success in both life and career.</p>
+                    </div>
+                    <div class="value-card p-8 text-center">
+                        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-briefcase text-orange-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Placement Support</h3>
+                        <p class="text-gray-600">Supporting students in finding job opportunities after training.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-orange-50">
+            <div class="container mx-auto px-4">
+                <div class="bg-white rounded-xl shadow-sm p-8 md:p-12 max-w-5xl mx-auto">
+                    <div class="md:flex items-center">
+                        <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Why Choose Our Centre?</h3>
+                                <ul class="space-y-4 text-gray-600">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-orange-500 mt-1 mr-3"></i>
+                                    <span>An initiative of Sri Sathya Sai Seva Organizations, renowned for their excellence in value-based education.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-orange-500 mt-1 mr-3"></i>
+                                    <span> Training programs offered at no cost to all eligible students.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-orange-500 mt-1 mr-3"></i>
+                                    <span>Expert faculty with hands-on industry experience.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-orange-500 mt-1 mr-3"></i>
+                                    <span>Modern classrooms and skill-based training infrastructure.</span>
+                                </li>
+                                </ul>
+
+                        </div>
+                        <div class="md:w-1/2">
+                            <div class="bg-orange-100 p-6 rounded-lg">
+                                <h4 class="font-semibold text-gray-800 mb-4">Upcoming Events</h4>
+                                <div class="space-y-4">
+                                  <!-- Event 1 -->
+                                    <div class="flex items-start mb-4">
+                                    <div class="bg-orange-500 text-white rounded-lg w-20 h-14 text-center mr-4 flex flex-col justify-center items-center leading-tight">
+                                        <div class="text-base font-bold">6</div>
+                                        <div class="text-xs">SEP</div>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-medium text-gray-800">Empowering Women Through Free Maggam & Tailoring Training.</h5>
+                                    </div>
+                                    </div>
+
+                                    <!-- Event 2 -->
+                                    <div class="flex items-start">
+                                    <div class="bg-orange-500 text-white rounded-lg w-20 h-14 text-center mr-4 flex flex-col justify-center items-center leading-tight">
+                                        <div class="text-sm leading-none font-bold" style="font-size: 13px;">Coming</div>
+                                        <div class="text-xs leading-none">Soon</div>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-medium text-gray-800">Admissions Open For Python with AI for Women's Batch.</h5>
+                                        <p class="text-sm text-gray-600">2 Batch</p>
+                                    </div>
+                                    </div>
+
+
+                                </div>
+                                <a href="programs.html" class="inline-block mt-4 text-orange-500 font-medium hover:underline">View All Events →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+<div id="chat-container" class="fixed bottom-5 right-5 z-50">
+    <!-- The circular icon that toggles the chat window -->
+    <button id="chat-icon" class="bg-orange-500 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center focus:outline-none hover:bg-orange-600 transition-transform duration-300 ease-in-out">
+        <i class="fas fa-comments text-2xl"></i>
+    </button>
+
+    <!-- 
+      The chat window itself.
+      It's hidden by default and its visibility is toggled by JavaScript.
+      - Width increased to w-[26rem] (416px)
+      - Height decreased to h-[36rem] (576px)
+      - Increased rounding to rounded-2xl
+    -->
+    <div id="chat-window" class="hidden absolute bottom-24 right-0 w-[26rem] bg-white rounded-2xl shadow-2xl flex flex-col transition-all duration-300 ease-in-out" style="height: 36rem;">
+        
+        <!-- Header Section -->
+        <div class="bg-orange-500 text-white p-4 rounded-t-2xl flex justify-between items-center">
+            <h3 class="font-bold text-lg">Chat Bot</h3>
+            <button id="close-chat" class="text-2xl font-bold focus:outline-none hover:opacity-75">&times;</button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto">
+            <!-- Example initial message -->
+            <div class="mb-4 flex">
+                <div class="bg-gray-100 text-gray-800 rounded-lg py-2 px-4 inline-block max-w-xs">
+                    <p>Sairam! How can I help you today? Or ask me in Telugu!</p>
+                </div>
+            </div>
+             <!-- Example user message -->
+            <div class="mb-4 flex justify-end">
+                <div class="bg-orange-500 text-white rounded-lg py-2 px-4 inline-block max-w-xs">
+                    <p>Hello!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-4 border-t border-gray-200">
+            <!-- 
+              Updated input group to match the image.
+              - A single flex container with a border and rounded-full.
+              - The input field has no border itself.
+              - The button is styled to match.
+            -->
+            <div class="flex items-center border border-gray-300 rounded-full p-1 focus-within:ring-2 focus-within:ring-orange-400">
+                <input type="text" id="chat-input" placeholder="Type your message..." class="w-full px-4 py-2 border-none focus:outline-none focus:ring-0 bg-transparent text-gray-800">
+                <button id="send-btn" class="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 focus:outline-none">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <footer class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4">
+    <!-- Top Footer Grid -->
+    <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-4 mb-8">
+      <!-- Logo and Description -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 flex items-center">
+          <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          SSSDC–JCL
+        </h3>
+        <p class="text-gray-400 text-sm mb-4">
+          Empowering communities through skill development inspired by Sri Sathya Sai Baba's teachings of love, service, and human values.
+        </p>
+        <div class="flex space-x-3">
+          <a href="https://www.facebook.com/profile.php?id=61579270434231" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://x.com/Srisathyas48205" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/srisathyasai_skill_dev/" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.youtube.com/@srisathyaasai_skill.dev_centre" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="index.html" class="text-gray-400 hover:text-orange-500">Home</a></li>
+          <li><a href="about.html" class="text-gray-400 hover:text-orange-500">About Us</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Programs</a></li>
+          <li><a href="gallery.html" class="text-gray-400 hover:text-orange-500">Gallery</a></li>
+          <li><a href="join.html" class="text-gray-400 hover:text-orange-500">Join Us</a></li>
+          <li><a href="contact.html" class="text-gray-400 hover:text-orange-500">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Program List -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Our Programs</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Tailoring & Maggam Work</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Beautician Training</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Electrical & Wiring</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Computer Basics</a></li>
+          <li><a href="programs.html" class="text-gray-400 hover:text-orange-500">Soft Skills</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Contact Us</h4>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li class="flex items-start">
+            <i class="fas fa-map-marker-alt mr-2 mt-1 text-orange-500"></i>
+            <span>Jadcherla, Mahabubnagar, Telangana - 509301, India</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-phone-alt mr-2 mt-1 text-orange-500"></i>
+            <span>+91 8555 287239</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-envelope mr-2 mt-1 text-orange-500"></i>
+            <span>srisathyasaiskilldevelopment@gmail.com</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Footer Bar -->
+    <div class="border-t border-gray-800 pt-4 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-400">
+      <p class="mb-2 sm:mb-0">© 2025 Sri Sathya Sai Skill Development Centre. All rights reserved.</p>
+      <div class="flex space-x-4">
+        <a href="#" class="hover:text-orange-500">Privacy Policy</a>
+        <a href="#" class="hover:text-orange-500">Terms of Service</a>
+        <a href="#" class="hover:text-orange-500">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mainHeader = document.getElementById('main-header');
+        const marquee = document.querySelector('.admission-marquee');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            setOffsets(); // header height may change when menu opens
+        });
+
+        // Measure and update CSS variables so the marquee sits flush with header
+        function setOffsets() {
+            const headerHeight = mainHeader.offsetHeight;
+            document.documentElement.style.setProperty('--header-h', headerHeight + 'px');
+
+            if (marquee) {
+                const marqueeHeight = marquee.offsetHeight || 40;
+                document.documentElement.style.setProperty('--marquee-h', marqueeHeight + 'px');
+            }
+        }
+
+        // Header Scroll Effect (making it solid on scroll)
+        function onScroll() {
+            const scrolled = window.scrollY > 50;
+            mainHeader.classList.toggle('header-scrolled', scrolled);
+            mainHeader.classList.toggle('header-transparent', !scrolled);
+            setOffsets();
+        }
+
+        window.addEventListener('scroll', onScroll);
+        window.addEventListener('load', setOffsets);
+        window.addEventListener('resize', setOffsets);
+
+        // Fallback if video doesn't load
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.querySelector('.video-background');
+            const overlay = document.querySelector('.overlay');
+            if (video && overlay) {
+                video.addEventListener('error', function() {
+                    overlay.style.background = 'linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80)';
+                    overlay.style.backgroundSize = 'cover';
+                    overlay.style.backgroundPosition = 'center';
+                    video.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
